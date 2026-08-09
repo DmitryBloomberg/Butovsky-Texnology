@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import './App.css';
+import './styles/App.css';
+import './styles/Applications-style.css'
 
 // ========================================
 // === ГЛАВНАЯ СТРАНИЦА (без изменений) ====
@@ -403,6 +404,171 @@ function Dashboard() {
   );
 }
 
+function Applications() {
+  // === Поэтапный статус: created → in_progress → completed ===
+  const [status, setStatus] = useState('created');
+
+  // === Заготовка под изображения ===
+  const [images, setImages] = useState([]);
+  const fileInputRef = useRef(null);
+
+  const STATUS = {
+    created:     { label: 'Оформлено',             className: 'status-created' },
+    in_progress: { label: 'В работе',              className: 'status-in_progress' },
+    completed:   { label: 'Исполнение утверждено', className: 'status-completed' },
+  };
+
+  const steps = [
+    { key: 'created',     label: 'Оформлено',  icon: 'bx-edit-alt' },
+    { key: 'in_progress', label: 'В работе',   icon: 'bx-time-five' },
+    { key: 'completed',   label: 'Утверждено', icon: 'bx-check-circle' },
+  ];
+  const stepIndex = steps.findIndex((s) => s.key === status);
+
+  // Загрузка нескольких фото (локально через FileReader-ссылки;
+  // при подключении бэкенда достаточно заменить на массив URL с сервера)
+  const handleFiles = (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    setImages((prev) => [...prev, ...files.map((f) => URL.createObjectURL(f))]);
+    e.target.value = '';
+  };
+
+  const removeImage = (idx) => {
+    setImages((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  return (
+    <div className='Applications_Main_Container'>
+      {/* ===== Левая панель (без изменений) ===== */}
+      <div className='ALL-Applications'>
+        <div className='Head-Main'>
+          <i className='bx bxs-city'></i>
+          <h1>Cube</h1>
+        </div>
+        <div className='Applications-ALL_BTHS'>
+          <button className='active'>Заявка <i className="bx bx-hash"></i> 198210</button>
+          <button>Заявка <i className="bx bx-hash"></i> 198210</button>
+          <button>Заявка <i className="bx bx-hash"></i> 198210</button>
+        </div>
+      </div>
+
+      {/* ===== Правая панель — карточка заявки ===== */}
+      <div className='Application-ALL-Right_container'>
+        <div className='Application-Container-Information'>
+
+          {/* Шапка карточки + статус-бейдж */}
+          <div className='Application-Head'>
+            <h1><i className="bx bx-hash"></i> Заявка № 198210</h1>
+            <span key={status} className={`Status-Badge ${STATUS[status].className}`}>
+              <span className="Status-Dot"></span>
+              {STATUS[status].label}
+            </span>
+          </div>
+
+          {/* Степпер этапов выполнения */}
+          <div className="Status-Stepper">
+            {steps.map((s, i) => (
+              <React.Fragment key={s.key}>
+                {i > 0 && (
+                  <div className={`Stepper-Line ${i <= stepIndex ? 'filled' : ''}`} />
+                )}
+                <div className={`Stepper-Step ${i < stepIndex ? 'done' : ''} ${i === stepIndex ? 'active' : ''}`}>
+                  <div className="Stepper-Dot"><i className={`bx ${s.icon}`}></i></div>
+                  <span>{s.label}</span>
+                </div>
+              </React.Fragment>
+            ))}
+          </div>
+
+          {/* Основная информация */}
+          <div className="Application-Rows">
+            <div className="Application-Row">
+              <i className="bx bx-user"></i>
+              <div>
+                <div className="Row-Label">Отправитель</div>
+                <div className="Row-Value">Дмитрий Худов</div>
+              </div>
+            </div>
+            <div className="Application-Row">
+              <i className="bx bx-envelope"></i>
+              <div>
+                <div className="Row-Label">Почта</div>
+                <div className="Row-Value">Dmitry3@gmail.com</div>
+              </div>
+            </div>
+            <div className="Application-Row">
+              <i className="bx bx-category"></i>
+              <div>
+                <div className="Row-Label">Категория</div>
+                <div className="Row-Value">Уборка</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Фотографии (заготовка под несколько изображений) */}
+          <div className="Application-Photos">
+            <div className="Photos-Head">
+              <h3><i className="bx bx-images"></i> Фотографии <em>({images.length})</em></h3>
+            </div>
+
+            <div className="Photos-Grid">
+              {images.map((src, idx) => (
+                <div className="Photo-Item" key={idx}>
+                  <img src={src} alt={`Фото ${idx + 1}`} />
+                  <button type="button" className="Photo-Remove" onClick={() => removeImage(idx)}>
+                    <i className="bx bx-x"></i>
+                  </button>
+                </div>
+              ))}
+
+              <div className="Photo-Add" onClick={() => fileInputRef.current?.click()}>
+                <i className="bx bx-plus"></i>
+                <span>Добавить фото</span>
+              </div>
+            </div>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleFiles}
+              style={{ display: 'none' }}
+            />
+          </div>
+
+          {/* Описание проблемы */}
+          <div className="Application-Description">
+            <div className="Desc-Label"><i className="bx bx-message-detail"></i> Описание</div>
+            <p>Добрый день! У нас плохо убрались, пожалуйста, исправьте.</p>
+          </div>
+
+          {/* Поэтапные действия */}
+          <div className="Application-Actions">
+            {status === 'created' && (
+              <button className="Action-Btn Action-Btn_Work" onClick={() => setStatus('in_progress')}>
+                <i className="bx bx-briefcase-alt"></i> Принять в работу
+              </button>
+            )}
+            {status === 'in_progress' && (
+              <button className="Action-Btn Action-Btn_Done" onClick={() => setStatus('completed')}>
+                <i className="bx bx-check-double"></i> Утвердить исполнение
+              </button>
+            )}
+            {status === 'completed' && (
+              <div className="Completed-Note">
+                <i className="bx bx-check-circle"></i> Заявка закрыта — исполнение утверждено
+              </div>
+            )}
+          </div>
+
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ========================================
 // === ГЛАВНЫЙ КОМПОНЕНТ С РОУТАМИ ========
 // ========================================
@@ -412,6 +578,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/applications" element={<Applications/>}/>
       </Routes>
     </Router>
   );

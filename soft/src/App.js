@@ -1099,25 +1099,21 @@ function Dashboard() {
   );
 }
 
-// ========================================
-// === APPLICATIONS (админ-панель) ========
-// ========================================
 function Applications() {
   const isAllowed = useSessionGuard('administrator');
-
-  const [requests, setRequests] = useState([]);        // все заявки с сервера
+  const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedId, setSelectedId] = useState(null);  // выбранная заявка
+  const [selectedId, setSelectedId] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState('');
+  const [lightbox, setLightbox] = useState(null); // { images: [...], index }
 
   const STATUS = {
     created:     { label: 'Оформлено',             className: 'status-created' },
     in_progress: { label: 'В работе',              className: 'status-in_progress' },
     completed:   { label: 'Исполнение утверждено', className: 'status-completed' },
   };
-  // статус из БД → ключ степпера
   const statusToKey = {
     'Оформлено': 'created',
     'В работе': 'in_progress',
@@ -1128,7 +1124,7 @@ function Applications() {
     { key: 'in_progress', label: 'В работе',   icon: 'bx-time-five' },
     { key: 'completed',   label: 'Утверждено', icon: 'bx-check-circle' },
   ];
-  const dotColor = { 'Оформлено': '#6ab7ff', 'В работе': '#ffb84d' };
+  const dotColor = { 'Оформлено': '#6ab7ff', 'В работе': '#ffb84d', 'Исполнение утверждено': '#5ee08a' };
 
   // ===== Загрузка ВСЕХ заявок =====
   useEffect(() => {
@@ -1143,15 +1139,15 @@ function Applications() {
       .finally(() => setLoading(false));
   }, [isAllowed]);
 
-  // В левой панели — только НЕ выполненные заявки
   const activeRequests = requests.filter((r) => r.status !== 'Исполнение утверждено');
   const selected = requests.find((r) => r.id === selectedId) || null;
 
-  // Если выбор пуст или заявка выполнена — выбираем первую активную
+  // Автовыбор: только если выбор пуст или заявки больше нет
   useEffect(() => {
-    const list = requests.filter((r) => r.status !== 'Исполнение утверждено');
-    if (!list.find((r) => r.id === selectedId)) {
-      setSelectedId(list.length ? list[0].id : null);
+    if (!requests.length) { setSelectedId(null); return; }
+    if (!requests.find((r) => r.id === selectedId)) {
+      const list = requests.filter((r) => r.status !== 'Исполнение утверждено');
+      setSelectedId(list.length ? list[0].id : requests[0].id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requests]);
@@ -1180,10 +1176,34 @@ function Applications() {
     }
   };
 
+  // ===== ЛАЙТБОКС: просмотр фото =====
+  const openLightbox = (images, index) => setLightbox({ images, index });
+  const nextImage = () =>
+    setLightbox((lb) => (lb ? { ...lb, index: (lb.index + 1) % lb.images.length } : lb));
+  const prevImage = () =>
+    setLightbox((lb) => (lb ? { ...lb, index: (lb.index - 1 + lb.images.length) % lb.images.length } : lb));
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (!lightbox) return;
+      if (e.key === 'Escape') setLightbox(null);
+      if (e.key === 'ArrowRight') nextImage();
+      if (e.key === 'ArrowLeft') prevImage();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lightbox]);
+
   if (!isAllowed) return null;
 
   const statusKey = selected ? (statusToKey[selected.status] || 'created') : 'created';
   const stepIndex = steps.findIndex((s) => s.key === statusKey);
+
+  // Только картинки (для лайтбокса)
+  const imagesOnly = selected
+    ? (selected.media || []).filter((m) => m.type === 'image').map((m) => `${API_URL}${m.url}`)
+    : [];
 
   return (
     <div className="Applications_Main_Container">
@@ -1237,7 +1257,7 @@ function Applications() {
           </div>
         ) : (
           <div className="Application-Container-Information">
-            {/* Шапка + статус-бейдж */}
+            {/* Шапка + статус */}
             <div className="Application-Head">
               <h1><i className="bx bx-hash"></i> Заявка № {selected.id}</h1>
               <span key={selected.status} className={`Status-Badge ${STATUS[statusKey].className}`}>
@@ -1246,13 +1266,11 @@ function Applications() {
               </span>
             </div>
 
-            {/* Степпер — линия заполняется поэтапно */}
+            {/* Степпер */}
             <div className="Status-Stepper">
               {steps.map((s, i) => (
                 <React.Fragment key={s.key}>
-                  {i > 0 && (
-                    <div className={`Stepper-Line ${i <= stepIndex ? 'filled' : ''}`} />
-                  )}
+                  {i > 0 && <div className={`Stepper-Line ${i <= stepIndex ? 'filled' : ''}`} />}
                   <div className={`Stepper-Step ${i < stepIndex ? 'done' : ''} ${i === stepIndex ? 'active' : ''}`}>
                     <div className="Stepper-Dot"><i className={`bx ${s.icon}`}></i></div>
                     <span>{s.label}</span>
@@ -1261,7 +1279,7 @@ function Applications() {
               ))}
             </div>
 
-            {/* Полные данные пользователя (без пароля) */}
+            {/* Данные */}
             <div className="Application-Rows">
               <div className="Application-Row">
                 <i className="bx bx-user"></i>
@@ -1297,33 +1315,49 @@ function Applications() {
               </div>
             </div>
 
-            {/* Медиа заявки */}
-            {selected.media && selected.media.length > 0 && (
-              <div className="Application-Photos">
-                <div className="Photos-Head">
-                  <h3><i className="bx bx-images"></i> Фотографии <em>({selected.media.length})</em></h3>
-                </div>
-                <div className="Photos-Grid">
-                  {selected.media.map((m, idx) => (
-                    <div className="Photo-Item" key={idx}>
-                      {m.type === 'video' ? (
-                        <video src={`${API_URL}${m.url}`} controls playsInline preload="metadata" />
-                      ) : (
-                        <img src={`${API_URL}${m.url}`} alt={`Фото ${idx + 1}`} loading="lazy" />
-                      )}
-                    </div>
-                  ))}
-                </div>
+            {/* ===== ФОТОГРАФИИ (кликабельные, внутри контейнера) ===== */}
+            <div className="Application-Photos">
+              <div className="Photos-Head">
+                <h3><i className="bx bx-images"></i> Фотографии <em>({(selected.media || []).length})</em></h3>
               </div>
-            )}
+              {selected.media && selected.media.length > 0 ? (
+                <div className="Photos-Grid">
+                  {selected.media.map((m, idx) => {
+                    const imgIdx = m.type === 'image' ? imagesOnly.indexOf(`${API_URL}${m.url}`) : -1;
+                    return (
+                      <div className="Photo-Item" key={idx}>
+                        {m.type === 'video' ? (
+                          <video src={`${API_URL}${m.url}`} controls playsInline preload="metadata" />
+                        ) : (
+                          <>
+                            <img
+                              src={`${API_URL}${m.url}`}
+                              alt={`Фото ${idx + 1}`}
+                              loading="lazy"
+                              onClick={() => openLightbox(imagesOnly, imgIdx)}
+                            />
+                            <span className="Photo-ZoomHint"><i className="bx bx-zoom-in"></i></span>
+                          </>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="UserApps-NoMedia">
+                  <i className="bx bx-image"></i>
+                  <span>Медиафайлы не прикреплены</span>
+                </div>
+              )}
+            </div>
 
-            {/* Описание проблемы */}
+            {/* Описание */}
             <div className="Application-Description">
               <div className="Desc-Label"><i className="bx bx-message-detail"></i> Описание</div>
               <p>{selected.description}</p>
             </div>
 
-            {/* Поэтапные действия */}
+            {/* ===== КНОПКИ СТАТУСОВ ВНИЗУ КОНТЕЙНЕРА ===== */}
             <div className="Application-Actions">
               {selected.status === 'Оформлено' && (
                 <button
@@ -1335,13 +1369,36 @@ function Applications() {
                 </button>
               )}
               {selected.status === 'В работе' && (
-                <button
-                  className="Action-Btn Action-Btn_Done"
-                  disabled={actionLoading}
-                  onClick={() => changeStatus(selected.id, 'Исполнение утверждено')}
-                >
-                  <i className="bx bx-check-double"></i> Выполнена
-                </button>
+                <>
+                  <button
+                    className="Action-Btn Action-Btn_Back"
+                    disabled={actionLoading}
+                    onClick={() => changeStatus(selected.id, 'Оформлено')}
+                  >
+                    <i className="bx bx-undo"></i> Вернуть в «Оформлено»
+                  </button>
+                  <button
+                    className="Action-Btn Action-Btn_Done"
+                    disabled={actionLoading}
+                    onClick={() => changeStatus(selected.id, 'Исполнение утверждено')}
+                  >
+                    <i className="bx bx-check-double"></i> Выполнена
+                  </button>
+                </>
+              )}
+              {selected.status === 'Исполнение утверждено' && (
+                <>
+                  <button
+                    className="Action-Btn Action-Btn_Back"
+                    disabled={actionLoading}
+                    onClick={() => changeStatus(selected.id, 'В работе')}
+                  >
+                    <i className="bx bx-undo"></i> Вернуть в работу
+                  </button>
+                  <div className="Completed-Note">
+                    <i className="bx bx-check-circle"></i> Заявка закрыта
+                  </div>
+                </>
               )}
               {actionError && (
                 <div style={{ width: '100%', textAlign: 'center', color: '#ff8a8a', fontSize: 13 }}>
@@ -1352,6 +1409,36 @@ function Applications() {
           </div>
         )}
       </div>
+
+      {/* ===== ЛАЙТБОКС — полноэкранный просмотр фото ===== */}
+      {lightbox && (
+        <div className="Lightbox-Overlay" onClick={() => setLightbox(null)}>
+          <button type="button" className="Lightbox-Close" onClick={() => setLightbox(null)} aria-label="Закрыть просмотр">
+            <i className="bx bx-x"></i>
+          </button>
+          {lightbox.images.length > 1 && (
+            <button type="button" className="Lightbox-Arrow Lightbox-Arrow_Left"
+              onClick={(e) => { e.stopPropagation(); prevImage(); }} aria-label="Предыдущее фото">
+              <i className="bx bx-chevron-left"></i>
+            </button>
+          )}
+          <img
+            className="Lightbox-Image"
+            src={lightbox.images[lightbox.index]}
+            alt={`Просмотр фото ${lightbox.index + 1}`}
+            onClick={(e) => e.stopPropagation()}
+          />
+          {lightbox.images.length > 1 && (
+            <button type="button" className="Lightbox-Arrow Lightbox-Arrow_Right"
+              onClick={(e) => { e.stopPropagation(); nextImage(); }} aria-label="Следующее фото">
+              <i className="bx bx-chevron-right"></i>
+            </button>
+          )}
+          {lightbox.images.length > 1 && (
+            <div className="Lightbox-Counter">{lightbox.index + 1} / {lightbox.images.length}</div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

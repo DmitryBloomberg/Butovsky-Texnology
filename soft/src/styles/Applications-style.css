@@ -338,13 +338,6 @@
     }
 }
 
-.Application-Container-Information {
-    width: 50%;
-    height: 60%;
-    background-color: rgb(32, 23, 62);
-    border-radius: 10px;
-}
-
 .Application-Head {
     width: 100%;
     height: 10%;
@@ -1400,3 +1393,309 @@
 }
 .Application-Empty i { font-size: 52px; color: #6774c9; }
 .Application-Empty h1 { margin: 0; font-size: 18px; color: #8a86b8; font-weight: 500; }
+
+
+/* ============================================
+📋 КАРТОЧКА ЗАЯВКИ В БОКОВОЙ ПАНЕЛИ (с фото и кнопками)
+============================================ */
+.App-Sidebar-Card {
+  position: relative;
+  width: 100%;
+  padding: 14px 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+.App-Sidebar-Card:hover {
+  background: linear-gradient(135deg, rgba(106, 90, 205, 0.18) 0%, rgba(255, 107, 157, 0.08) 100%);
+  border-color: rgba(106, 90, 205, 0.5);
+  box-shadow:
+    0 8px 30px rgba(106, 90, 205, 0.25),
+    0 0 20px rgba(106, 90, 205, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transform: translateX(4px);
+}
+
+.App-Sidebar-Card.active {
+  background: linear-gradient(135deg, rgba(106, 90, 205, 0.3) 0%, rgba(255, 107, 157, 0.15) 100%);
+  border-color: #6a5acd;
+  box-shadow:
+    0 8px 30px rgba(106, 90, 205, 0.4),
+    0 0 25px rgba(106, 90, 205, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.App-Sidebar-Card.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 15%;
+  bottom: 15%;
+  width: 3px;
+  background: linear-gradient(180deg, #6a5acd, #ff6b9d);
+  border-radius: 0 3px 3px 0;
+  box-shadow: 0 0 10px rgba(106, 90, 205, 0.8);
+}
+
+/* Выполненная заявка — приглушённый стиль */
+.App-Sidebar-Card_Completed {
+  opacity: 0.6;
+}
+.App-Sidebar-Card_Completed:hover {
+  opacity: 0.85;
+}
+
+/* Верхняя строка карточки */
+.App-Sidebar-Card_Top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.App-Sidebar-Card_Info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.App-Sidebar-Card_Info .bx-hash {
+  font-size: 16px;
+  color: #6a5acd;
+  background: rgba(106, 90, 205, 0.15);
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid rgba(106, 90, 205, 0.3);
+}
+
+.App-Sidebar-Card.active .App-Sidebar-Card_Info .bx-hash {
+  background: linear-gradient(135deg, #6a5acd, #ff6b9d);
+  color: #fff;
+  border-color: transparent;
+}
+
+.App-Sidebar-Card_Id {
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.App-Sidebar-Card_Category {
+  color: #9aa5d9;
+  font-size: 12px;
+  background: rgba(106, 90, 205, 0.12);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+/* Точка статуса */
+.App-Sidebar-Status {
+  width: 10px;
+  height: 10px;
+  min-width: 10px;
+  border-radius: 50%;
+  box-shadow: 0 0 10px currentColor;
+}
+
+/* ===== МИНИАТЮРЫ ФОТО В САЙДБАРЕ ===== */
+.App-Sidebar-Thumbs {
+  display: flex;
+  gap: 6px;
+}
+
+.App-Sidebar-Thumb {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
+}
+
+.App-Sidebar-Thumb img,
+.App-Sidebar-Thumb video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.App-Sidebar-Thumb_More {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ===== КНОПКИ СТАТУСОВ В САЙДБАРЕ ===== */
+.App-Sidebar-Actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.Sidebar-Btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.Sidebar-Btn i {
+  font-size: 14px;
+}
+
+.Sidebar-Btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Кнопка "В работу" */
+.Sidebar-Btn_Work {
+  background: linear-gradient(135deg, #6a5acd, #8f7fe0);
+  box-shadow: 0 4px 12px rgba(106, 90, 205, 0.3);
+}
+
+.Sidebar-Btn_Work:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(106, 90, 205, 0.5);
+}
+
+/* Кнопка "Выполнена" */
+.Sidebar-Btn_Done {
+  background: linear-gradient(135deg, #2eb872, #5ee08a);
+  box-shadow: 0 4px 12px rgba(46, 184, 114, 0.3);
+}
+
+.Sidebar-Btn_Done:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(46, 184, 114, 0.5);
+}
+
+.Sidebar-Btn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* ===== ЗАГОЛОВОК СЕКЦИИ "ВЫПОЛНЕННЫЕ" ===== */
+.App-Sidebar-Section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 8px 6px;
+  color: #5ee08a;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 8px;
+}
+
+.App-Sidebar-Section i {
+  font-size: 16px;
+}
+
+/* ===== АДАПТИВ ДЛЯ НОВОГО САЙДБАРА ===== */
+@media (max-width: 768px) {
+  .App-Sidebar-Thumbs {
+    gap: 4px;
+  }
+  .App-Sidebar-Thumb {
+    width: 44px;
+    height: 44px;
+  }
+  .App-Sidebar-Actions {
+    flex-direction: column;
+  }
+}
+
+/* ===== КОНТЕЙНЕР РАСТЯГИВАЕТСЯ ПО КОНТЕНТУ (фото и кнопки видны) ===== */
+.Application-Container-Information {
+  height: auto !important;
+  max-height: none;
+}
+
+/* ===== СЕКЦИЯ ФОТО ВНУТРИ КОНТЕЙНЕРА ===== */
+.Application-Photos {
+  margin-top: 4px;
+}
+
+.Photo-Item {
+  position: relative;
+  cursor: zoom-in;
+}
+.Photo-Item video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+  cursor: default;
+}
+
+/* Подсказка «увеличить» при наведении на фото */
+.Photo-ZoomHint {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-size: 15px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.Photo-Item:hover .Photo-ZoomHint { opacity: 1; }
+
+/* ===== КНОПКА «ВЕРНУТЬ» (смена статуса назад) ===== */
+.Action-Btn_Back {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cfd6ff;
+  box-shadow: none;
+}
+.Action-Btn_Back:hover {
+  background: rgba(255, 184, 77, 0.12);
+  border-color: rgba(255, 184, 77, 0.4);
+  color: #ffb84d;
+  transform: translateY(-2px);
+}

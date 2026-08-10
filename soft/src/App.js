@@ -6,6 +6,41 @@ import './styles/Applications-style.css'
 const API_URL = 'http://localhost:5000';
 
 // ========================================
+// === ХУК ПРОВЕРКИ СЕССИИ ================
+// ========================================
+function useSessionGuard(allowedStatus) {
+  const navigate = useNavigate();
+  const [checked, setChecked] = useState(false); // true = проверка завершена
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/session`, { credentials: 'include' })
+      .then((r) => r.json())
+      .then((data) => {
+        // 1) Пользователь удалён или cookie недействительна → на регистрацию
+        if (!data.authenticated) {
+          navigate('/', { replace: true });
+          return;
+        }
+
+        // 2) Статус изменился → редирект на правильный маршрут
+        if (data.status !== allowedStatus) {
+          navigate(data.redirect || '/', { replace: true });
+          return;
+        }
+
+        // 3) Всё в порядке — разрешаем рендер
+        setChecked(true);
+      })
+      .catch(() => {
+        // Сервер недоступен — разлогиниваем на главную
+        navigate('/', { replace: true });
+      });
+  }, [navigate, allowedStatus]);
+
+  return checked; // false = показываем заглушку / ничего не рендерим
+}
+
+// ========================================
 // === ГЛАВНАЯ СТРАНИЦА (без изменений) ====
 // ========================================
 function HomePage() {
@@ -355,10 +390,14 @@ function Search_Application({ onClose }) {
 // === DASHBOARD ===========================
 // ========================================
 function Dashboard() {
+  const isAllowed = useSessionGuard('user'); // доступен только для status === 'user'
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUserApplications, setUserApplications] = useState(false);
   const [isSearchApplication, setSearchApplication] = useState(false);
   const infoRef = useRef(null);
+
+  // Пока проверка не завершена — не рендерим страницу
+  if (!isAllowed) return null;
 
   const scrollToInfo = () => {
     if (infoRef.current) {
@@ -439,6 +478,7 @@ function Dashboard() {
 }
 
 function Applications() {
+  const isAllowed = useSessionGuard('administrator'); // доступен только для admin
   // === Поэтапный статус: created → in_progress → completed ===
   const [status, setStatus] = useState('created');
 
@@ -471,6 +511,9 @@ function Applications() {
   const removeImage = (idx) => {
     setImages((prev) => prev.filter((_, i) => i !== idx));
   };
+
+  // Пока проверка не завершена — не рендерим страницу
+  if (!isAllowed) return null;
 
   return (
     <div className='Applications_Main_Container'>

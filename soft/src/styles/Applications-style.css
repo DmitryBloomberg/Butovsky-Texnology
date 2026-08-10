@@ -1370,3 +1370,33 @@
     font-size: 26px;
   }
 }
+
+/* ===== Точка-статус в списке заявок (левая панель) ===== */
+.Applications-ALL_BTHS button .req-dot {
+  margin-left: auto;
+  width: 9px;
+  height: 9px;
+  min-width: 9px;
+  border-radius: 50%;
+  box-shadow: 0 0 10px currentColor;
+}
+/* ===== Видео в сетке фото админ-карточки ===== */
+.Photo-Item video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: #000;
+}
+/* ===== Пустое состояние правой панели ===== */
+.Application-Empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 70px 30px;
+  text-align: center;
+}
+.Application-Empty i { font-size: 52px; color: #6774c9; }
+.Application-Empty h1 { margin: 0; font-size: 18px; color: #8a86b8; font-weight: 500; }

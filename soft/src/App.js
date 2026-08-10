@@ -1099,169 +1099,258 @@ function Dashboard() {
   );
 }
 
+// ========================================
+// === APPLICATIONS (админ-панель) ========
+// ========================================
 function Applications() {
-  const isAllowed = useSessionGuard('administrator'); // доступен только для admin
-  // === Поэтапный статус: created → in_progress → completed ===
-  const [status, setStatus] = useState('created');
+  const isAllowed = useSessionGuard('administrator');
 
-  // === Заготовка под изображения ===
-  const [images, setImages] = useState([]);
-  const fileInputRef = useRef(null);
+  const [requests, setRequests] = useState([]);        // все заявки с сервера
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [selectedId, setSelectedId] = useState(null);  // выбранная заявка
+  const [actionLoading, setActionLoading] = useState(false);
+  const [actionError, setActionError] = useState('');
 
   const STATUS = {
     created:     { label: 'Оформлено',             className: 'status-created' },
     in_progress: { label: 'В работе',              className: 'status-in_progress' },
     completed:   { label: 'Исполнение утверждено', className: 'status-completed' },
   };
-
+  // статус из БД → ключ степпера
+  const statusToKey = {
+    'Оформлено': 'created',
+    'В работе': 'in_progress',
+    'Исполнение утверждено': 'completed',
+  };
   const steps = [
     { key: 'created',     label: 'Оформлено',  icon: 'bx-edit-alt' },
     { key: 'in_progress', label: 'В работе',   icon: 'bx-time-five' },
     { key: 'completed',   label: 'Утверждено', icon: 'bx-check-circle' },
   ];
-  const stepIndex = steps.findIndex((s) => s.key === status);
+  const dotColor = { 'Оформлено': '#6ab7ff', 'В работе': '#ffb84d' };
 
-  // Загрузка нескольких фото (локально через FileReader-ссылки;
-  // при подключении бэкенда достаточно заменить на массив URL с сервера)
-  const handleFiles = (e) => {
-    const files = Array.from(e.target.files || []);
-    if (!files.length) return;
-    setImages((prev) => [...prev, ...files.map((f) => URL.createObjectURL(f))]);
-    e.target.value = '';
+  // ===== Загрузка ВСЕХ заявок =====
+  useEffect(() => {
+    if (!isAllowed) return;
+    fetch(`${API_URL}/api/requests/all`, { credentials: 'include' })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) setRequests(data.requests || []);
+        else setError(data.message || 'Ошибка загрузки заявок');
+      })
+      .catch(() => setError('Сервер недоступен, попробуйте позже'))
+      .finally(() => setLoading(false));
+  }, [isAllowed]);
+
+  // В левой панели — только НЕ выполненные заявки
+  const activeRequests = requests.filter((r) => r.status !== 'Исполнение утверждено');
+  const selected = requests.find((r) => r.id === selectedId) || null;
+
+  // Если выбор пуст или заявка выполнена — выбираем первую активную
+  useEffect(() => {
+    const list = requests.filter((r) => r.status !== 'Исполнение утверждено');
+    if (!list.find((r) => r.id === selectedId)) {
+      setSelectedId(list.length ? list[0].id : null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requests]);
+
+  // ===== Смена статуса =====
+  const changeStatus = async (id, status) => {
+    setActionLoading(true);
+    setActionError('');
+    try {
+      const res = await fetch(`${API_URL}/api/requests/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ status }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
+      } else {
+        setActionError(data.message || 'Не удалось изменить статус');
+      }
+    } catch {
+      setActionError('Сервер недоступен, попробуйте позже');
+    } finally {
+      setActionLoading(false);
+    }
   };
 
-  const removeImage = (idx) => {
-    setImages((prev) => prev.filter((_, i) => i !== idx));
-  };
+  if (!isAllowed) return null;
 
-  
+  const statusKey = selected ? (statusToKey[selected.status] || 'created') : 'created';
+  const stepIndex = steps.findIndex((s) => s.key === statusKey);
 
   return (
-    <div className='Applications_Main_Container'>
-      {/* ===== Левая панель (без изменений) ===== */}
-      <div className='ALL-Applications'>
-        <div className='Head-Main'>
-          <i className='bx bxs-city'></i>
+    <div className="Applications_Main_Container">
+      {/* ===== Левая панель — список заявок ===== */}
+      <div className="ALL-Applications">
+        <div className="Head-Main">
+          <i className="bx bxs-city"></i>
           <h1>Cube</h1>
         </div>
-        <div className='Applications-ALL_BTHS'>
-          <button className='active'>Заявка <i className="bx bx-hash"></i> 198210</button>
-          <button>Заявка <i className="bx bx-hash"></i> 198210</button>
-          <button>Заявка <i className="bx bx-hash"></i> 198210</button>
+        <div className="Applications-ALL_BTHS">
+          {loading && (
+            <div className="UserApps-State">
+              <i className="bx bx-loader-alt bx-spin"></i>
+              <span>Загрузка заявок...</span>
+            </div>
+          )}
+          {!loading && error && (
+            <div className="UserApps-State UserApps-Error">
+              <i className="bx bx-error-circle"></i>
+              <span>{error}</span>
+            </div>
+          )}
+          {!loading && !error && activeRequests.length === 0 && (
+            <div className="UserApps-State">
+              <i className="bx bx-inbox"></i>
+              <span>Нет активных заявок</span>
+            </div>
+          )}
+          {!loading && !error && activeRequests.map((req) => (
+            <button
+              key={req.id}
+              className={req.id === selectedId ? 'active' : ''}
+              onClick={() => setSelectedId(req.id)}
+            >
+              Заявка <i className="bx bx-hash"></i> {req.id}
+              <span
+                className="req-dot"
+                style={{ background: dotColor[req.status] || '#6ab7ff', color: dotColor[req.status] || '#6ab7ff' }}
+              ></span>
+            </button>
+          ))}
         </div>
       </div>
 
       {/* ===== Правая панель — карточка заявки ===== */}
-      <div className='Application-ALL-Right_container'>
-        <div className='Application-Container-Information'>
-
-          {/* Шапка карточки + статус-бейдж */}
-          <div className='Application-Head'>
-            <h1><i className="bx bx-hash"></i> Заявка № 198210</h1>
-            <span key={status} className={`Status-Badge ${STATUS[status].className}`}>
-              <span className="Status-Dot"></span>
-              {STATUS[status].label}
-            </span>
+      <div className="Application-ALL-Right_container">
+        {!selected ? (
+          <div className="Application-Container-Information Application-Empty">
+            <i className="bx bx-mouse-alt"></i>
+            <h1>Выберите заявку из списка слева</h1>
           </div>
-
-          {/* Степпер этапов выполнения */}
-          <div className="Status-Stepper">
-            {steps.map((s, i) => (
-              <React.Fragment key={s.key}>
-                {i > 0 && (
-                  <div className={`Stepper-Line ${i <= stepIndex ? 'filled' : ''}`} />
-                )}
-                <div className={`Stepper-Step ${i < stepIndex ? 'done' : ''} ${i === stepIndex ? 'active' : ''}`}>
-                  <div className="Stepper-Dot"><i className={`bx ${s.icon}`}></i></div>
-                  <span>{s.label}</span>
-                </div>
-              </React.Fragment>
-            ))}
-          </div>
-
-          {/* Основная информация */}
-          <div className="Application-Rows">
-            <div className="Application-Row">
-              <i className="bx bx-user"></i>
-              <div>
-                <div className="Row-Label">Отправитель</div>
-                <div className="Row-Value">Дмитрий Худов</div>
-              </div>
-            </div>
-            <div className="Application-Row">
-              <i className="bx bx-envelope"></i>
-              <div>
-                <div className="Row-Label">Почта</div>
-                <div className="Row-Value">Dmitry3@gmail.com</div>
-              </div>
-            </div>
-            <div className="Application-Row">
-              <i className="bx bx-category"></i>
-              <div>
-                <div className="Row-Label">Категория</div>
-                <div className="Row-Value">Уборка</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Фотографии (заготовка под несколько изображений) */}
-          <div className="Application-Photos">
-            <div className="Photos-Head">
-              <h3><i className="bx bx-images"></i> Фотографии <em>({images.length})</em></h3>
+        ) : (
+          <div className="Application-Container-Information">
+            {/* Шапка + статус-бейдж */}
+            <div className="Application-Head">
+              <h1><i className="bx bx-hash"></i> Заявка № {selected.id}</h1>
+              <span key={selected.status} className={`Status-Badge ${STATUS[statusKey].className}`}>
+                <span className="Status-Dot"></span>
+                {STATUS[statusKey].label}
+              </span>
             </div>
 
-            <div className="Photos-Grid">
-              {images.map((src, idx) => (
-                <div className="Photo-Item" key={idx}>
-                  <img src={src} alt={`Фото ${idx + 1}`} />
-                  <button type="button" className="Photo-Remove" onClick={() => removeImage(idx)}>
-                    <i className="bx bx-x"></i>
-                  </button>
-                </div>
+            {/* Степпер — линия заполняется поэтапно */}
+            <div className="Status-Stepper">
+              {steps.map((s, i) => (
+                <React.Fragment key={s.key}>
+                  {i > 0 && (
+                    <div className={`Stepper-Line ${i <= stepIndex ? 'filled' : ''}`} />
+                  )}
+                  <div className={`Stepper-Step ${i < stepIndex ? 'done' : ''} ${i === stepIndex ? 'active' : ''}`}>
+                    <div className="Stepper-Dot"><i className={`bx ${s.icon}`}></i></div>
+                    <span>{s.label}</span>
+                  </div>
+                </React.Fragment>
               ))}
+            </div>
 
-              <div className="Photo-Add" onClick={() => fileInputRef.current?.click()}>
-                <i className="bx bx-plus"></i>
-                <span>Добавить фото</span>
+            {/* Полные данные пользователя (без пароля) */}
+            <div className="Application-Rows">
+              <div className="Application-Row">
+                <i className="bx bx-user"></i>
+                <div>
+                  <div className="Row-Label">Отправитель</div>
+                  <div className="Row-Value">
+                    {(selected.user_name || selected.user_surname)
+                      ? `${selected.user_name || ''} ${selected.user_surname || ''}`.trim()
+                      : 'Не указано'}
+                  </div>
+                </div>
+              </div>
+              <div className="Application-Row">
+                <i className="bx bx-envelope"></i>
+                <div>
+                  <div className="Row-Label">Почта</div>
+                  <div className="Row-Value">{selected.user_email || 'Не указано'}</div>
+                </div>
+              </div>
+              <div className="Application-Row">
+                <i className="bx bx-category"></i>
+                <div>
+                  <div className="Row-Label">Категория</div>
+                  <div className="Row-Value">{selected.category}</div>
+                </div>
+              </div>
+              <div className="Application-Row">
+                <i className="bx bx-door-open"></i>
+                <div>
+                  <div className="Row-Label">Подъезд / Этаж</div>
+                  <div className="Row-Value">{selected.entrance} / {selected.floor}</div>
+                </div>
               </div>
             </div>
 
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleFiles}
-              style={{ display: 'none' }}
-            />
-          </div>
-
-          {/* Описание проблемы */}
-          <div className="Application-Description">
-            <div className="Desc-Label"><i className="bx bx-message-detail"></i> Описание</div>
-            <p>Добрый день! У нас плохо убрались, пожалуйста, исправьте.</p>
-          </div>
-
-          {/* Поэтапные действия */}
-          <div className="Application-Actions">
-            {status === 'created' && (
-              <button className="Action-Btn Action-Btn_Work" onClick={() => setStatus('in_progress')}>
-                <i className="bx bx-briefcase-alt"></i> Принять в работу
-              </button>
-            )}
-            {status === 'in_progress' && (
-              <button className="Action-Btn Action-Btn_Done" onClick={() => setStatus('completed')}>
-                <i className="bx bx-check-double"></i> Утвердить исполнение
-              </button>
-            )}
-            {status === 'completed' && (
-              <div className="Completed-Note">
-                <i className="bx bx-check-circle"></i> Заявка закрыта — исполнение утверждено
+            {/* Медиа заявки */}
+            {selected.media && selected.media.length > 0 && (
+              <div className="Application-Photos">
+                <div className="Photos-Head">
+                  <h3><i className="bx bx-images"></i> Фотографии <em>({selected.media.length})</em></h3>
+                </div>
+                <div className="Photos-Grid">
+                  {selected.media.map((m, idx) => (
+                    <div className="Photo-Item" key={idx}>
+                      {m.type === 'video' ? (
+                        <video src={`${API_URL}${m.url}`} controls playsInline preload="metadata" />
+                      ) : (
+                        <img src={`${API_URL}${m.url}`} alt={`Фото ${idx + 1}`} loading="lazy" />
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
-          </div>
 
-        </div>
+            {/* Описание проблемы */}
+            <div className="Application-Description">
+              <div className="Desc-Label"><i className="bx bx-message-detail"></i> Описание</div>
+              <p>{selected.description}</p>
+            </div>
+
+            {/* Поэтапные действия */}
+            <div className="Application-Actions">
+              {selected.status === 'Оформлено' && (
+                <button
+                  className="Action-Btn Action-Btn_Work"
+                  disabled={actionLoading}
+                  onClick={() => changeStatus(selected.id, 'В работе')}
+                >
+                  <i className="bx bx-briefcase-alt"></i> Принять в работу
+                </button>
+              )}
+              {selected.status === 'В работе' && (
+                <button
+                  className="Action-Btn Action-Btn_Done"
+                  disabled={actionLoading}
+                  onClick={() => changeStatus(selected.id, 'Исполнение утверждено')}
+                >
+                  <i className="bx bx-check-double"></i> Выполнена
+                </button>
+              )}
+              {actionError && (
+                <div style={{ width: '100%', textAlign: 'center', color: '#ff8a8a', fontSize: 13 }}>
+                  <i className="bx bx-error-circle"></i> {actionError}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

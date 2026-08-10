@@ -220,5 +220,73 @@ app.post('/api/requests', upload.array('media', 5), async (req, res) => {
     }
 });
 
+// ===== Раздача медиафайлов из minidata =====
+app.get('/api/media/:requestId/:filename', (req, res) => {
+  const { requestId, filename } = req.params;
+  // Защита от path traversal
+  const safeName = path.basename(filename);
+  const filePath = path.join(MINIDATA_DIR, String(requestId), safeName);
+
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ success: false, message: 'Файл не найден' });
+  }
+  res.sendFile(filePath);
+});
+
+// ================= ПОЛУЧЕНИЕ ЗАЯВОК ПОЛЬЗОВАТЕЛЯ =================
+app.get('/api/requests/my', async (req, res) => {
+  try {
+    const hash = req.cookies[COOKIE_NAME];
+    if (!hash) return res.status(401).json({ success: false, message: 'Не авторизован' });
+
+    const user = await findUserByHash(hash);
+    if (!user) return res.status(401).json({ success: false, message: 'Пользователь не найден' });
+
+    // Получаем все заявки пользователя
+    const { rows } = await pool.query(
+      `SELECT id, entrance, floor, category, status FROM requests WHERE userid = $1 ORDER BY id DESC`,
+      [user.id]
+    );
+
+    // Для каждой заявки собираем список медиафайлов
+    const requests = rows.map((row) => {
+      const requestDir = path.join(MINIDATA_DIR, String(row.id));
+      let mediaFiles = [];
+      let description = 'Нет описания';
+
+      if (fs.existsSync(requestDir)) {
+        // Читаем описание
+        const descPath = path.join(requestDir, 'description.txt');
+        if (fs.existsSync(descPath)) {
+          description = fs.readFileSync(descPath, 'utf-8');
+        }
+
+        // Читаем медиафайлы
+        const files = fs.readdirSync(requestDir).filter((f) => f.startsWith('media_'));
+        mediaFiles = files.map((f) => ({
+          filename: f,
+          url: `/api/media/${row.id}/${f}`,
+          type: /\.(mp4|webm|ogg|mov)$/i.test(f) ? 'video' : 'image',
+        }));
+      }
+
+      return {
+        id: row.id,
+        entrance: row.entrance,
+        floor: row.floor,
+        category: row.category,
+        status: row.status,
+        description,
+        media: mediaFiles,
+      };
+    });
+
+    return res.json({ success: true, requests });
+  } catch (err) {
+    console.error('GET MY REQUESTS ERROR:', err);
+    return res.status(500).json({ success: false, message: 'Ошибка сервера' });
+  }
+});
+
 const PORT = 5000;
 app.listen(PORT, () => console.log(`✅ Сервер запущен: http://localhost:${PORT}`));

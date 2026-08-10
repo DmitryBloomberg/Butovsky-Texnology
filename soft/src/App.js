@@ -357,9 +357,6 @@ function RequestModal({ onClose }) {
                     onChange={handleChange}
                   >
                     <option value="Уборка">Уборка</option>
-                    <option value="Сантехника">Сантехника</option>
-                    <option value="Электрика">Электрика</option>
-                    <option value="Ремонт">Ремонт</option>
                   </select>
                   <i className="bx bx-chevron-down Modal-SelectArrow"></i>
                 </div>
@@ -448,29 +445,276 @@ function RequestModal({ onClose }) {
 // === Заявки пользователя ===============
 // ========================================
 function User_Applications({ onClose }) {
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [expandedId, setExpandedId] = useState(null);
+
+  // ===== ЛАЙТБОКС =====
+  // { images: [url, ...], index: 0 } или null
+  const [lightbox, setLightbox] = useState(null);
+
+  // Загрузка заявок
   useEffect(() => {
-    const onKey = (e) => e.key === 'Escape' && onClose();
-    window.addEventListener('keydown', onKey);
+    setLoading(true);
+    setError('');
+    fetch(`${API_URL}/api/requests/my`, { credentials: 'include' })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) setRequests(data.requests || []);
+        else setError(data.message || 'Ошибка загрузки');
+      })
+      .catch(() => setError('Сервер недоступен'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  // Блокировка скролла фона
+  useEffect(() => {
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    return () => {
-      window.removeEventListener('keydown', onKey);
-      document.body.style.overflow = prevOverflow;
+    return () => { document.body.style.overflow = prevOverflow; };
+  }, []);
+
+  // ===== Закрытие по Esc + стрелки в лайтбоксе =====
+  useEffect(() => {
+    const onKey = (e) => {
+      if (lightbox) {
+        // Лайтбокс открыт: Esc закрывает фото, стрелки листают
+        if (e.key === 'Escape') {
+          e.stopPropagation();
+          setLightbox(null);
+        }
+        if (e.key === 'ArrowRight') nextImage();
+        if (e.key === 'ArrowLeft') prevImage();
+      } else if (e.key === 'Escape') {
+        onClose(); // Esc без лайтбокса закрывает модалку
+      }
     };
-  }, [onClose]);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lightbox, onClose]);
+
+  const toggleExpand = (id) => setExpandedId((p) => (p === id ? null : id));
+
+  // ===== Открыть лайтбокс =====
+  // images — массив URL картинок заявки, index — по какой кликнули
+  const openLightbox = (images, index) => setLightbox({ images, index });
+
+  const nextImage = () =>
+    setLightbox((lb) =>
+      lb ? { ...lb, index: (lb.index + 1) % lb.images.length } : lb
+    );
+
+  const prevImage = () =>
+    setLightbox((lb) =>
+      lb ? { ...lb, index: (lb.index - 1 + lb.images.length) % lb.images.length } : lb
+    );
+
+  const statusMap = {
+    'Оформлено': { color: '#6ab7ff', bg: 'rgba(106,183,255,0.12)', border: 'rgba(106,183,255,0.35)' },
+    'В работе': { color: '#ffb84d', bg: 'rgba(255,184,77,0.12)', border: 'rgba(255,184,77,0.35)' },
+    'Исполнение утверждено': { color: '#5ee08a', bg: 'rgba(94,224,138,0.12)', border: 'rgba(94,224,138,0.35)' },
+  };
 
   return (
     <div className="Modal-Overlay" onClick={onClose}>
-      <div className="Modal" onClick={(e) => e.stopPropagation()}>
+      <div className="Modal Modal-Wide" onClick={(e) => e.stopPropagation()}>
         <button type="button" className="Modal-Close" onClick={onClose} aria-label="Закрыть">
           <i className="bx bx-x"></i>
         </button>
+
         <div className="Modal-Header">
           <i className="bx bx-file"></i>
           <h1>Мои заявки</h1>
           <p>Список ваших обращений и их статусы</p>
         </div>
-        {/* Здесь будет контент ваших заявок */}
+
+        {loading && (
+          <div className="UserApps-State">
+            <i className="bx bx-loader-alt bx-spin"></i>
+            <span>Загрузка заявок...</span>
+          </div>
+        )}
+
+        {error && (
+          <div className="UserApps-State UserApps-Error">
+            <i className="bx bx-error-circle"></i>
+            <span>{error}</span>
+          </div>
+        )}
+
+        {!loading && !error && requests.length === 0 && (
+          <div className="UserApps-State">
+            <i className="bx bx-inbox"></i>
+            <span>У вас пока нет заявок</span>
+          </div>
+        )}
+
+        {!loading && !error && requests.length > 0 && (
+          <div className="UserApps-List">
+            {requests.map((req) => {
+              const st = statusMap[req.status] || statusMap['Оформлено'];
+              const isExpanded = expandedId === req.id;
+
+              // Только картинки (для лайтбокса), в порядке отображения
+              const imagesOnly = (req.media || [])
+                .filter((m) => m.type === 'image')
+                .map((m) => `${API_URL}${m.url}`);
+
+              return (
+                <div className={`UserApps-Card ${isExpanded ? 'expanded' : ''}`} key={req.id}>
+                  {/* Шапка карточки */}
+                  <div className="UserApps-CardHead" onClick={() => toggleExpand(req.id)}>
+                    <div className="UserApps-CardHead-Left">
+                      <span className="UserApps-Id">#{req.id}</span>
+                      <span className="UserApps-Category">{req.category}</span>
+                    </div>
+                    <div className="UserApps-CardHead-Right">
+                      <span
+                        className="UserApps-Status"
+                        style={{ color: st.color, background: st.bg, borderColor: st.border }}
+                      >
+                        <span className="UserApps-StatusDot" style={{ background: st.color }}></span>
+                        {req.status}
+                      </span>
+                      <i className={`bx ${isExpanded ? 'bx-chevron-up' : 'bx-chevron-down'} UserApps-Arrow`}></i>
+                    </div>
+                  </div>
+
+                  {/* Краткая информация */}
+                  <div className="UserApps-CardBody">
+                    <div className="UserApps-InfoRow">
+                      <i className="bx bx-door-open"></i>
+                      <span>Подъезд: <strong>{req.entrance}</strong></span>
+                    </div>
+                    <div className="UserApps-InfoRow">
+                      <i className="bx bx-layer"></i>
+                      <span>Этаж: <strong>{req.floor}</strong></span>
+                    </div>
+                  </div>
+
+                  {/* Раскрывающаяся часть */}
+                  {isExpanded && (
+                    <div className="UserApps-Expanded">
+                      {req.description && (
+                        <div className="UserApps-Desc">
+                          <div className="UserApps-DescLabel">
+                            <i className="bx bx-message-detail"></i> Описание
+                          </div>
+                          <p>{req.description}</p>
+                        </div>
+                      )}
+
+                      {req.media && req.media.length > 0 && (
+                        <div className="UserApps-Media">
+                          <div className="UserApps-MediaLabel">
+                            <i className="bx bx-images"></i> Медиа ({req.media.length})
+                          </div>
+                          <div className="UserApps-MediaGrid">
+                            {req.media.map((m, idx) => {
+                              // Позиция картинки среди ТОЛЬКО картинок (для лайтбокса)
+                              const imgIdx = m.type === 'image'
+                                ? imagesOnly.indexOf(`${API_URL}${m.url}`)
+                                : -1;
+
+                              return (
+                                <div className="UserApps-MediaItem" key={idx}>
+                                  {m.type === 'video' ? (
+                                    <video
+                                      src={`${API_URL}${m.url}`}
+                                      controls
+                                      playsInline
+                                      preload="metadata"
+                                    />
+                                  ) : (
+                                    <>
+                                      <img
+                                        src={`${API_URL}${m.url}`}
+                                        alt={`Медиа ${idx + 1}`}
+                                        loading="lazy"
+                                        onClick={() => openLightbox(imagesOnly, imgIdx)}
+                                      />
+                                      {/* Иконка-подсказка, что фото кликабельно */}
+                                      <span className="UserApps-ZoomHint">
+                                        <i className="bx bx-zoom-in"></i>
+                                      </span>
+                                    </>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      {(!req.media || req.media.length === 0) && (
+                        <div className="UserApps-NoMedia">
+                          <i className="bx bx-image"></i>
+                          <span>Медиафайлы не прикреплены</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* ===== ЛАЙТБОКС (поверх модалки) ===== */}
+        {lightbox && (
+          <div className="Lightbox-Overlay" onClick={() => setLightbox(null)}>
+            {/* Крестик закрытия */}
+            <button
+              type="button"
+              className="Lightbox-Close"
+              onClick={() => setLightbox(null)}
+              aria-label="Закрыть просмотр"
+            >
+              <i className="bx bx-x"></i>
+            </button>
+
+            {/* Стрелка влево */}
+            {lightbox.images.length > 1 && (
+              <button
+                type="button"
+                className="Lightbox-Arrow Lightbox-Arrow_Left"
+                onClick={(e) => { e.stopPropagation(); prevImage(); }}
+                aria-label="Предыдущее фото"
+              >
+                <i className="bx bx-chevron-left"></i>
+              </button>
+            )}
+
+            {/* Само фото (клик по нему не закрывает лайтбокс) */}
+            <img
+              className="Lightbox-Image"
+              src={lightbox.images[lightbox.index]}
+              alt={`Просмотр фото ${lightbox.index + 1}`}
+              onClick={(e) => e.stopPropagation()}
+            />
+
+            {/* Стрелка вправо */}
+            {lightbox.images.length > 1 && (
+              <button
+                type="button"
+                className="Lightbox-Arrow Lightbox-Arrow_Right"
+                onClick={(e) => { e.stopPropagation(); nextImage(); }}
+                aria-label="Следующее фото"
+              >
+                <i className="bx bx-chevron-right"></i>
+              </button>
+            )}
+
+            {/* Счётчик */}
+            {lightbox.images.length > 1 && (
+              <div className="Lightbox-Counter">
+                {lightbox.index + 1} / {lightbox.images.length}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

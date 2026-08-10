@@ -963,3 +963,410 @@
   text-align: right;
   margin-top: -4px;
 }
+
+
+/* ================================================== */
+/* ===== МОИ ЗАЯВКИ — СПИСОК В МОДАЛКЕ ============= */
+/* ================================================== */
+
+/* Расширенная модалка для списка заявок */
+.Modal-Wide {
+  max-width: 680px;
+  max-height: 85vh;
+}
+
+/* Состояния: загрузка / ошибка / пусто */
+.UserApps-State {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 50px 20px;
+  color: #9aa5d9;
+  font-size: 15px;
+}
+.UserApps-State i {
+  font-size: 48px;
+  color: #6774c9;
+}
+.UserApps-Error i {
+  color: #ff6b6b;
+}
+.UserApps-Error span {
+  color: #ff8a8a;
+}
+
+/* Список заявок */
+.UserApps-List {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 55vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.UserApps-List::-webkit-scrollbar { width: 6px; }
+.UserApps-List::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 10px; }
+.UserApps-List::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #3550e0, #7a3ff0);
+  border-radius: 10px;
+}
+
+/* Карточка заявки */
+.UserApps-Card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(122, 140, 255, 0.15);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.UserApps-Card:hover {
+  border-color: rgba(122, 140, 255, 0.35);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+}
+.UserApps-Card.expanded {
+  border-color: rgba(122, 140, 255, 0.4);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Шапка карточки */
+.UserApps-CardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s ease;
+}
+.UserApps-CardHead:hover {
+  background: rgba(122, 140, 255, 0.06);
+}
+.UserApps-CardHead-Left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.UserApps-CardHead-Right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.UserApps-Id {
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+}
+.UserApps-Category {
+  color: #9aa5d9;
+  font-size: 13px;
+  background: rgba(122, 140, 255, 0.1);
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+.UserApps-Arrow {
+  color: #6774c9;
+  font-size: 20px;
+  transition: transform 0.3s ease;
+}
+
+/* Статус-бейдж */
+.UserApps-Status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid;
+}
+.UserApps-StatusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  animation: pulseDot 1.6s ease-in-out infinite;
+}
+
+/* Тело карточки (краткая инфа) */
+.UserApps-CardBody {
+  display: flex;
+  gap: 20px;
+  padding: 0 18px 14px;
+}
+.UserApps-InfoRow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #aab6f0;
+  font-size: 13px;
+}
+.UserApps-InfoRow i {
+  font-size: 16px;
+  color: #6774c9;
+}
+.UserApps-InfoRow strong {
+  color: #fff;
+}
+
+/* Раскрывающаяся часть */
+.UserApps-Expanded {
+  padding: 0 18px 18px;
+  border-top: 1px solid rgba(122, 140, 255, 0.1);
+  animation: expandIn 0.3s ease;
+}
+@keyframes expandIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Описание */
+.UserApps-Desc {
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: rgba(122, 140, 255, 0.05);
+  border-left: 3px solid #3550e0;
+  border-radius: 10px;
+}
+.UserApps-DescLabel {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #8fa5ff;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 8px;
+}
+.UserApps-Desc p {
+  margin: 0;
+  color: #d6d2f5;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Медиа */
+.UserApps-Media {
+  margin-top: 16px;
+}
+.UserApps-MediaLabel {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #8fa5ff;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 12px;
+}
+.UserApps-MediaGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+}
+.UserApps-MediaItem {
+  aspect-ratio: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(122, 140, 255, 0.2);
+  background: rgba(9, 11, 38, 0.6);
+}
+.UserApps-MediaItem img,
+.UserApps-MediaItem video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Нет медиа */
+.UserApps-NoMedia {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #5d68a8;
+  font-size: 13px;
+  padding: 12px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 10px;
+}
+.UserApps-NoMedia i {
+  font-size: 20px;
+}
+
+/* Адаптив */
+@media (max-width: 576px) {
+  .Modal-Wide {
+    max-width: 100%;
+    padding: 24px 16px;
+  }
+  .UserApps-CardHead {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .UserApps-CardHead-Right {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .UserApps-MediaGrid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  }
+}
+
+/* ================================================== */
+/* ===== ЛАЙТБОКС — ПОЛНОЭКРАННЫЙ ПРОСМОТР ФОТО ===== */
+/* ================================================== */
+
+.Lightbox-Overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000; /* выше модалки (1000) */
+  background: rgba(3, 4, 15, 0.93);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: modalFadeIn 0.2s ease-out;
+  cursor: zoom-out; /* клик по фону = закрыть */
+}
+
+/* Фото по центру, вписано в экран */
+.Lightbox-Image {
+  max-width: 92vw;
+  max-height: 88vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.85);
+  animation: lightboxZoom 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: default; /* клик по фото не закрывает */
+  user-select: none;
+}
+@keyframes lightboxZoom {
+  from { opacity: 0; transform: scale(0.86); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Крестик закрытия */
+.Lightbox-Close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 30px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  z-index: 3;
+}
+.Lightbox-Close:hover {
+  background: rgba(255, 90, 90, 0.25);
+  border-color: rgba(255, 90, 90, 0.5);
+  color: #ff8a8a;
+  transform: rotate(90deg);
+}
+
+/* Стрелки навигации */
+.Lightbox-Arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 34px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  z-index: 3;
+}
+.Lightbox-Arrow:hover {
+  background: rgba(106, 90, 205, 0.4);
+  border-color: #6a5acd;
+  transform: translateY(-50%) scale(1.08);
+}
+.Lightbox-Arrow_Left  { left: 24px; }
+.Lightbox-Arrow_Right { right: 24px; }
+
+/* Счётчик «2 / 5» снизу */
+.Lightbox-Counter {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 18px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  color: #dfe3ff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  backdrop-filter: blur(8px);
+}
+
+/* ===== Подсказка «увеличить» на миниатюре ===== */
+.UserApps-MediaItem {
+  position: relative;
+}
+.UserApps-MediaItem img {
+  cursor: zoom-in;
+}
+.UserApps-ZoomHint {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-size: 15px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.UserApps-MediaItem:hover .UserApps-ZoomHint {
+  opacity: 1;
+}
+
+/* ===== Адаптив лайтбокса ===== */
+@media (max-width: 576px) {
+  .Lightbox-Image {
+    max-width: 96vw;
+    max-height: 80vh;
+    border-radius: 8px;
+  }
+  .Lightbox-Arrow {
+    width: 42px;
+    height: 42px;
+    font-size: 26px;
+  }
+  .Lightbox-Arrow_Left  { left: 10px; }
+  .Lightbox-Arrow_Right { right: 10px; }
+  .Lightbox-Close {
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    font-size: 26px;
+  }
+}

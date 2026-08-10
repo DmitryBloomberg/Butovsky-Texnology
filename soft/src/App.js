@@ -1,55 +1,77 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import './styles/App.css';
 import './styles/Applications-style.css'
+
+const API_URL = 'http://localhost:5000';
 
 // ========================================
 // === ГЛАВНАЯ СТРАНИЦА (без изменений) ====
 // ========================================
 function HomePage() {
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(false);
-  const toggleForm = () => setIsLogin(!isLogin);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const data_info = [
-    "Управляйте ", "Контролируйте ", "Администрируйте ", "Настраивайте ",
-    "Регулируйте ", "Координируйте ", "Распределяйте ", "Делегируйте ",
-    "Создавайте заявки ", "Добавляйте ", "Формируйте ", "Генерируйте ",
-    "Редактируйте ", "Настраивайте шаблоны ", "Конструируйте ", "Публикуйте ",
-    "Заполняйте ", "Отслеживайте ", "Мониторьте ", "Наблюдайте ",
-    "Проверяйте ", "Анализируйте ", "Контролируйте статусы ", "Получайте уведомления ",
-    "Будьте в курсе ", "Планируйте ", "Организуйте ", "Структурируйте ",
-    "Приоритизируйте ", "Систематизируйте ", "Категоризируйте ", "Группируйте ",
-    "Сортируйте ", "Фильтруйте ", "Общайтесь ", "Комментируйте ",
-    "Обсуждайте ", "Уведомляйте ", "Оповещайте ", "Согласовывайте ",
-    "Приглашайте ", "Делитесь ", "Автоматизируйте ", "Ускоряйте ",
-    "Оптимизируйте ", "Упрощайте ", "Интегрируйте ", "Синхронизируйте ",
-    "Импортируйте ", "Экспортируйте ", "Анализируйте данные ", "Сравнивайте ",
-    "Визуализируйте ", "Формируйте отчёты ", "Выгружайте данные ", "Оценивайте ",
-    "Прогнозируйте ", "Назначайте ", "Перенаправляйте ", "Закрывайте ",
-    "Архивируйте ", "Повторяйте ", "Возобновляйте ", "Эскалируйте ",
-    "Защищайте ", "Разграничивайте доступ ", "Резервируйте ", "Шифруйте ",
-    "Проверяйте права ",
-  ];
+  const [regData, setRegData] = useState({ name: '', surname: '', email: '', password: '' });
+  const [logData, setLogData] = useState({ email: '', password: '' });
 
-  const data_client = [
-    { name: "Happ", logo: "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/90/de/e9/90dee993-af1c-4e6e-7966-cb0a7bc253c8/AppIcon-0-0-1x_U007epad-0-0-0-1-0-0-sRGB-85-220.png/1200x1200bb.png" },
-    { name: "AmneziaWG", logo: "https://freesoft.ru/storage/images/838/8376/837562/837562_normal.png" },
-    { name: "AmneziaVPN", logo: "https://freesoft.ru/storage/images/838/8376/837553/837553_normal.png" },
-    { name: "V2RayTun", logo: "https://dl.memuplay.com/new_market/img/com.v2raytun.android.icon.2025-05-14-14-44-49.png" },
-    { name: "V2RayNG", logo: "https://avatar.telemetr.me/dbe858a81d41c9b5c554134c782cbe63.jpg" },
-    { name: "V2Box", logo: "https://i.pinimg.com/736x/ec/07/be/ec07be0c75ccadc3711df7644a17c6a3.jpg" },
-    { name: "Incy", logo: "https://avatars.mds.yandex.net/i?id=22fcf20ccbbbf004d9cb0acce7358189_sr-5916663-images-thumbs&n=13" }
-  ];
+  const toggleForm = () => { setIsLogin(!isLogin); setError(''); };
 
-  const marqueeHalf = [...data_client, ...data_client, ...data_client, ...data_client];
-  const [currentIndex, setCurrentIndex] = useState(0);
-
+  // Повторный заход на сайт: проверяем cookie → уходим по статусу или остаёмся
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % data_info.length);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [data_info.length]);
+    fetch(`${API_URL}/api/session`, { credentials: 'include' })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.authenticated) navigate(data.redirect || '/dashboard');
+      })
+      .catch(() => { /* сервер недоступен — остаёмся на регистрации */ });
+  }, [navigate]);
+
+  const handleRegChange = (e) =>
+    setRegData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+  const handleLogChange = (e) =>
+    setLogData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+  // ===== РЕГИСТРАЦИЯ =====
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setError(''); setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/api/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(regData),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) navigate(data.redirect || '/dashboard');
+      else setError(data.message || 'Ошибка регистрации');
+    } catch {
+      setError('Сервер недоступен, попробуйте позже');
+    } finally { setLoading(false); }
+  };
+
+  // ===== ВХОД =====
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError(''); setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/api/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(logData),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) navigate(data.redirect || '/dashboard');
+      else setError(data.message || 'Неверная почта или пароль');
+    } catch {
+      setError('Сервер недоступен, попробуйте позже');
+    } finally { setLoading(false); }
+  };
 
   return (
     <div className="App">
@@ -61,23 +83,35 @@ function HomePage() {
           </div>
           <div className="Autintefication-Login_Container">
             {!isLogin ? (
-              <div className="Autintefication-Login_Container-REG">
+              <form className="Autintefication-Login_Container-REG" onSubmit={handleRegister}>
                 <h1>Регистрация</h1>
-                <input placeholder="Имя" type="text" />
-                <input placeholder="Фамилия" type="text" />
-                <input placeholder="Почта" type="email" />
-                <input placeholder="Пароль" type="password" />
-                <button>Зарегистрироваться</button>
+                <input name="name" placeholder="Имя" type="text"
+                       value={regData.name} onChange={handleRegChange} required />
+                <input name="surname" placeholder="Фамилия" type="text"
+                       value={regData.surname} onChange={handleRegChange} required />
+                <input name="email" placeholder="Почта" type="email"
+                       value={regData.email} onChange={handleRegChange} required />
+                <input name="password" placeholder="Пароль" type="password"
+                       value={regData.password} onChange={handleRegChange} required />
+                <button type="submit" disabled={loading}>
+                  {loading ? 'Обработка...' : 'Зарегистрироваться'}
+                </button>
+                {error && <h3 className="auth-error">{error}</h3>}
                 <h3 onClick={toggleForm} className="dashboard-link">Есть аккаунт. Войти!</h3>
-              </div>
+              </form>
             ) : (
-              <div className="Autintefication-Login_Container-LOG">
+              <form className="Autintefication-Login_Container-LOG" onSubmit={handleLogin}>
                 <h1>Вход</h1>
-                <input placeholder="Почта" type="email" />
-                <input placeholder="Пароль" type="password" />
-                <button>Войти</button>
+                <input name="email" placeholder="Почта" type="email"
+                       value={logData.email} onChange={handleLogChange} required />
+                <input name="password" placeholder="Пароль" type="password"
+                       value={logData.password} onChange={handleLogChange} required />
+                <button type="submit" disabled={loading}>
+                  {loading ? 'Проверка...' : 'Войти'}
+                </button>
+                {error && <h3 className="auth-error">{error}</h3>}
                 <h3 onClick={toggleForm} className="dashboard-link">Нет аккаунта. Зарегистрироваться!</h3>
-              </div>
+              </form>
             )}
           </div>
         </div>

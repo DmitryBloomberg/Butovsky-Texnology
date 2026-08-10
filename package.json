@@ -1,0 +1,21 @@
+{
+  "name": "butovsky-texnology",
+  "version": "1.0.0",
+  "description": "Подача заявок на все виды обслуживания дома",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DmitryBloomberg/Butovsky-Texnology.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/DmitryBloomberg/Butovsky-Texnology/issues"
+  },
+  "homepage": "https://github.com/DmitryBloomberg/Butovsky-Texnology#readme"
+}

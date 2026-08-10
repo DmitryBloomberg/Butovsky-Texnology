@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/DmitryBloomberg/Butovsky-Texnology/issues"
   },
-  "homepage": "https://github.com/DmitryBloomberg/Butovsky-Texnology#readme"
+  "homepage": "https://github.com/DmitryBloomberg/Butovsky-Texnology#readme",
+  "dependencies": {
+    "multer": "^2.2.0"
+  }
 }

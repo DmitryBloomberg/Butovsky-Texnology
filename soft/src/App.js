@@ -165,15 +165,21 @@ function HomePage() {
 // ========================================
 function RequestModal({ onClose }) {
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    address: '',
-    category: 'Сантехника',
+    entrance: '1', // По умолчанию 1
+    floor: '1',    // По умолчанию 1
+    category: 'Уборка', // По умолчанию Уборка
     description: '',
   });
+  const [mediaFiles, setMediaFiles] = useState([]); // { file, preview, type }
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [requestId, setRequestId] = useState(null); // ID заявки от сервера
+  
+  const fileInputRef = useRef(null);
+  const MAX_MEDIA = 5;
 
-  // Закрытие по Esc + блокировка скролла фона, пока окно открыто
+  // Закрытие по Esc + блокировка скролла фона
   useEffect(() => {
     const onKey = (e) => e.key === 'Escape' && onClose();
     window.addEventListener('keydown', onKey);
@@ -182,115 +188,254 @@ function RequestModal({ onClose }) {
     return () => {
       window.removeEventListener('keydown', onKey);
       document.body.style.overflow = prevOverflow;
+      mediaFiles.forEach((m) => URL.revokeObjectURL(m.preview));
     };
-  }, [onClose]);
+  }, [onClose, mediaFiles]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Заявка отправлена:', formData);
-    setSubmitted(true); // показываем экран успеха
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    const remainingSlots = MAX_MEDIA - mediaFiles.length;
+    if (remainingSlots <= 0) return;
+    const filesToAdd = files.slice(0, remainingSlots);
+    const newMedia = filesToAdd.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+      type: file.type.startsWith('video') ? 'video' : 'image',
+    }));
+    setMediaFiles((prev) => [...prev, ...newMedia]);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
+
+  const removeMedia = (index) => {
+    setMediaFiles((prev) => {
+      const copy = [...prev];
+      URL.revokeObjectURL(copy[index].preview);
+      copy.splice(index, 1);
+      return copy;
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const formDataToSend = new FormData();
+      
+      // Добавляем поля формы
+      formDataToSend.append('entrance', formData.entrance);
+      formDataToSend.append('floor', formData.floor);
+      formDataToSend.append('category', formData.category);
+      formDataToSend.append('description', formData.description);
+
+      // Добавляем файлы
+      mediaFiles.forEach((mediaItem) => {
+        formDataToSend.append('media', mediaItem.file);
+      });
+
+      const res = await fetch(`${API_URL}/api/requests`, {
+        method: 'POST',
+        credentials: 'include', // Передаем cookie для авторизации
+        body: formDataToSend,
+        // Headers не указываем Content-Type, браузер сам добавит boundary
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setRequestId(data.requestId);
+        setSubmitted(true);
+      } else {
+        setError(data.message || 'Ошибка при отправке заявки');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Сервер недоступен, попробуйте позже');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const isLimitReached = mediaFiles.length >= MAX_MEDIA;
 
   return (
     <div className="Modal-Overlay" onClick={onClose}>
       <div className="Modal" onClick={(e) => e.stopPropagation()}>
-        <button type="button" className="Modal-Close" onClick={onClose} aria-label="Закрыть">
+        <button
+          type="button"
+          className="Modal-Close"
+          onClick={onClose}
+          aria-label="Закрыть"
+        >
           <i className="bx bx-x"></i>
         </button>
 
         {submitted ? (
           <div className="Modal-Success">
             <i className="bx bx-check-circle"></i>
-            <h2>Заявка № успешно оформлена!</h2>
-            <p>Мы получили ваше обращение и отреагируем в кратчайший срок.</p>
-            <button type="button" onClick={onClose}>Отлично</button>
+            <h2>Заявка успешно оформлена!</h2>
+            <p>
+              Мы получили ваше обращение и отреагируем в кратчайший срок.
+            </p>
+            {requestId && (
+              <p style={{ fontWeight: 'bold', fontSize: '1.2rem', color: '#4CAF50', marginTop: '10px' }}>
+                Номер вашей заявки: #{requestId}
+              </p>
+            )}
+            <button type="button" onClick={onClose} style={{ marginTop: '20px' }}>
+              Отлично
+            </button>
           </div>
         ) : (
           <>
             <div className="Modal-Header">
               <i className="bx bx-edit-alt"></i>
               <h1>Оформить заявку</h1>
-              <p>Заполните форму и следите за статусом выполнения</p>
+              <p>Заполните форму и прикрепите фото/видео проблемы</p>
             </div>
-
             <form className="Modal-Form" onSubmit={handleSubmit}>
+              
+              {/* Подъезд */}
               <div className="Modal-Field">
-                <label htmlFor="req-category">Подьезд</label>
+                <label htmlFor="req-entrance">Подъезд</label>
                 <div className="Modal-InputWrap">
                   <i className="bx bx-category"></i>
-                  <select id="req-category" name="category"
-                          value={formData.category} onChange={handleChange}>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                    <option>Улица</option>
+                  <select
+                    id="req-entrance"
+                    name="entrance" // ИСПРАВЛЕНО
+                    value={formData.entrance}
+                    onChange={handleChange}
+                  >
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="Улица">Улица</option>
                   </select>
                   <i className="bx bx-chevron-down Modal-SelectArrow"></i>
                 </div>
               </div>
 
+              {/* Этаж */}
               <div className="Modal-Field">
-                <label htmlFor="req-category">Этаж</label>
+                <label htmlFor="req-floor">Этаж</label>
                 <div className="Modal-InputWrap">
                   <i className="bx bx-category"></i>
-                  <select id="req-category" name="category"
-                          value={formData.category} onChange={handleChange}>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                    <option>7</option>
-                    <option>8</option>
-                    <option>9</option>
-                    <option>10</option>
-                    <option>11</option>
-                    <option>12</option>
-                    <option>13</option>
-                    <option>14</option>
-                    <option>15</option>
-                    <option>16</option>
-                    <option>17</option>
-                    <option>Другой</option>
+                  <select
+                    id="req-floor"
+                    name="floor" // ИСПРАВЛЕНО
+                    value={formData.floor}
+                    onChange={handleChange}
+                  >
+                    {[...Array(17)].map((_, i) => (
+                      <option key={i + 1} value={i + 1}>{i + 1}</option>
+                    ))}
+                    <option value="Другой">Другой</option>
                   </select>
                   <i className="bx bx-chevron-down Modal-SelectArrow"></i>
                 </div>
               </div>
 
+              {/* Категория */}
               <div className="Modal-Field">
                 <label htmlFor="req-category">Категория</label>
                 <div className="Modal-InputWrap">
                   <i className="bx bx-category"></i>
-                  <select id="req-category" name="category"
-                          value={formData.category} onChange={handleChange}>
-                    <option>Уборка</option>
+                  <select
+                    id="req-category"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                  >
+                    <option value="Уборка">Уборка</option>
+                    <option value="Сантехника">Сантехника</option>
+                    <option value="Электрика">Электрика</option>
+                    <option value="Ремонт">Ремонт</option>
                   </select>
                   <i className="bx bx-chevron-down Modal-SelectArrow"></i>
                 </div>
               </div>
 
+              {/* ===== ЗАГРУЗКА ФОТО / ВИДЕО ===== */}
+              <div className="Modal-MediaUpload">
+                <label>Фото / Видео проблемы</label>
+                <div className="Media-PreviewGrid">
+                  {mediaFiles.map((item, idx) => (
+                    <div className="Media-Item" key={idx}>
+                      {item.type === 'video' ? (
+                        <video src={item.preview} muted playsInline />
+                      ) : (
+                        <img src={item.preview} alt="upload" />
+                      )}
+                      <button
+                        type="button"
+                        className="Media-Remove"
+                        onClick={() => removeMedia(idx)}
+                      >
+                        <i className="bx bx-x"></i>
+                      </button>
+                    </div>
+                  ))}
+                  {!isLimitReached && (
+                    <div
+                      className="Media-AddBtn"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <i className="bx bx-plus"></i>
+                      <span>Добавить</span>
+                    </div>
+                  )}
+                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*,video/*"
+                  multiple
+                  onChange={handleFileChange}
+                  style={{ display: 'none' }}
+                />
+                <div className="Media-Hint">
+                  {mediaFiles.length} / {MAX_MEDIA} файлов
+                </div>
+              </div>
+
+              {/* Описание проблемы */}
               <div className="Modal-Field">
                 <label htmlFor="req-desc">Описание проблемы</label>
                 <div className="Modal-InputWrap Modal-InputWrap_Textarea">
                   <i className="bx bx-message-detail"></i>
-                  <textarea id="req-desc" name="description"
-                            placeholder="Опишите проблему ..."
-                            value={formData.description} onChange={handleChange} required></textarea>
+                  <textarea
+                    id="req-desc"
+                    name="description"
+                    placeholder="Опишите проблему..."
+                    value={formData.description}
+                    onChange={handleChange}
+                    required
+                  ></textarea>
                 </div>
               </div>
 
-              <button type="submit" className="Modal-Submit">
-                <i className="bx bx-send"></i>
-                Отправить заявку
+              {error && <div style={{ color: 'red', marginBottom: '10px', textAlign: 'center' }}>{error}</div>}
+
+              <button type="submit" className="Modal-Submit" disabled={loading}>
+                {loading ? (
+                  <>
+                    <i className="bx bx-loader-alt bx-spin"></i> Отправка...
+                  </>
+                ) : (
+                  <>
+                    <i className="bx bx-send"></i> Отправить заявку
+                  </>
+                )}
               </button>
             </form>
           </>
@@ -299,7 +444,6 @@ function RequestModal({ onClose }) {
     </div>
   );
 }
-
 // ========================================
 // === Заявки пользователя ===============
 // ========================================
@@ -512,8 +656,7 @@ function Applications() {
     setImages((prev) => prev.filter((_, i) => i !== idx));
   };
 
-  // Пока проверка не завершена — не рендерим страницу
-  if (!isAllowed) return null;
+  
 
   return (
     <div className='Applications_Main_Container'>

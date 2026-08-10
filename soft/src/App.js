@@ -721,13 +721,34 @@ function User_Applications({ onClose }) {
 }
 
 // ========================================
-// === Search Application =================
+// === Search Application (с результатом) =
 // ========================================
 function Search_Application({ onClose }) {
   const [searchValue, setSearchValue] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [result, setResult] = useState(null);   // найденная заявка
+  const [lightbox, setLightbox] = useState(null); // { images, index }
 
+  // ---- Лайтбокс: навигация ----
+  const nextImage = () =>
+    setLightbox((lb) => (lb ? { ...lb, index: (lb.index + 1) % lb.images.length } : lb));
+  const prevImage = () =>
+    setLightbox((lb) =>
+      lb ? { ...lb, index: (lb.index - 1 + lb.images.length) % lb.images.length } : lb
+    );
+
+  // ---- Esc: закрыть лайтбокс или модалку; стрелки для фото ----
   useEffect(() => {
-    const onKey = (e) => e.key === 'Escape' && onClose();
+    const onKey = (e) => {
+      if (lightbox) {
+        if (e.key === 'Escape') { e.stopPropagation(); setLightbox(null); }
+        if (e.key === 'ArrowRight') nextImage();
+        if (e.key === 'ArrowLeft') prevImage();
+      } else if (e.key === 'Escape') {
+        onClose();
+      }
+    };
     window.addEventListener('keydown', onKey);
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -735,36 +756,249 @@ function Search_Application({ onClose }) {
       window.removeEventListener('keydown', onKey);
       document.body.style.overflow = prevOverflow;
     };
-  }, [onClose]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lightbox, onClose]);
+
+  // ---- Поиск ----
+  const handleSearch = async () => {
+    const num = searchValue.trim();
+    if (!num) return;
+    setLoading(true);
+    setError('');
+    setResult(null);
+    try {
+      const res = await fetch(`${API_URL}/api/requests/${encodeURIComponent(num)}`, {
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setResult(data.request);
+      } else {
+        setError(data.message || 'Заявка не найдена');
+      }
+    } catch {
+      setError('Сервер недоступен, попробуйте позже');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const openLightbox = (images, index) => setLightbox({ images, index });
+
+  const statusMap = {
+    'Оформлено':              { color: '#6ab7ff', bg: 'rgba(106,183,255,0.12)', border: 'rgba(106,183,255,0.35)' },
+    'В работе':               { color: '#ffb84d', bg: 'rgba(255,184,77,0.12)',  border: 'rgba(255,184,77,0.35)' },
+    'Исполнение утверждено':  { color: '#5ee08a', bg: 'rgba(94,224,138,0.12)',  border: 'rgba(94,224,138,0.35)' },
+  };
+
+  // Только картинки (для лайтбокса)
+  const imagesOnly = result
+    ? (result.media || []).filter((m) => m.type === 'image').map((m) => `${API_URL}${m.url}`)
+    : [];
 
   return (
     <div className="Modal-Overlay" onClick={onClose}>
-      <div className="Modal" onClick={(e) => e.stopPropagation()}>
+      <div className="Modal Modal-Wide" onClick={(e) => e.stopPropagation()}>
         <button type="button" className="Modal-Close" onClick={onClose} aria-label="Закрыть">
           <i className="bx bx-x"></i>
         </button>
-        <div className="Modal-Header">
-          <i className="bx bx-search-alt-2"></i>
-          <h1>Найти заявку</h1>
-          <p>Введите номер заявки для поиска</p>
-        </div>
-        <div className="Modal-Field">
-          <label htmlFor="search-num">Номер заявки</label>
-          <div className="Modal-InputWrap">
-            <i className="bx bx-hash"></i>
-            <input
-              id="search-num"
-              type="text"
-              placeholder="Например: 0001"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
+
+        {/* ================= ФОРМА ПОИСКА ================= */}
+        {!result && (
+          <>
+            <div className="Modal-Header">
+              <i className="bx bx-search-alt-2"></i>
+              <h1>Найти заявку</h1>
+              <p>Введите номер заявки для поиска</p>
+            </div>
+
+            <div className="Modal-Field">
+              <label htmlFor="search-num">Номер заявки</label>
+              <div className="Modal-InputWrap">
+                <i className="bx bx-hash"></i>
+                <input
+                  id="search-num"
+                  type="text"
+                  placeholder="Например: 1"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                  autoFocus
+                />
+              </div>
+            </div>
+
+            {error && (
+              <div style={{ color: '#ff8a8a', marginBottom: 14, textAlign: 'center', fontSize: 14 }}>
+                <i className="bx bx-error-circle" style={{ verticalAlign: 'middle', marginRight: 6 }}></i>
+                {error}
+              </div>
+            )}
+
+            <button
+              type="button"
+              className="Modal-Submit"
+              onClick={handleSearch}
+              disabled={loading || !searchValue.trim()}
+            >
+              {loading ? (
+                <><i className="bx bx-loader-alt bx-spin"></i> Поиск...</>
+              ) : (
+                <><i className="bx bx-search"></i> Найти</>
+              )}
+            </button>
+          </>
+        )}
+
+        {/* ================= КАРТОЧКА НАЙДЕННОЙ ЗАЯВКИ ================= */}
+        {result && (
+          <>
+            <div className="Modal-Header">
+              <i className="bx bx-file"></i>
+              <h1>Заявка № {result.id}</h1>
+              <p>Результат поиска</p>
+            </div>
+
+            {/* Статус */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
+              {(() => {
+                const st = statusMap[result.status] || statusMap['Оформлено'];
+                return (
+                  <span
+                    className="UserApps-Status"
+                    style={{ color: st.color, background: st.bg, borderColor: st.border }}
+                  >
+                    <span className="UserApps-StatusDot" style={{ background: st.color }}></span>
+                    {result.status}
+                  </span>
+                );
+              })()}
+            </div>
+
+            {/* Основные поля */}
+            <div className="UserApps-CardBody" style={{ justifyContent: 'center', flexWrap: 'wrap', gap: 16, padding: '0 0 18px' }}>
+              <div className="UserApps-InfoRow">
+                <i className="bx bx-door-open"></i>
+                <span>Подъезд: <strong>{result.entrance}</strong></span>
+              </div>
+              <div className="UserApps-InfoRow">
+                <i className="bx bx-layer"></i>
+                <span>Этаж: <strong>{result.floor}</strong></span>
+              </div>
+              <div className="UserApps-InfoRow">
+                <i className="bx bx-category"></i>
+                <span>Категория: <strong>{result.category}</strong></span>
+              </div>
+            </div>
+
+            {/* Описание */}
+            {result.description && result.description !== 'Нет описания' && (
+              <div className="UserApps-Desc">
+                <div className="UserApps-DescLabel">
+                  <i className="bx bx-message-detail"></i> Описание
+                </div>
+                <p>{result.description}</p>
+              </div>
+            )}
+
+            {/* Медиафайлы */}
+            {result.media && result.media.length > 0 && (
+              <div className="UserApps-Media">
+                <div className="UserApps-MediaLabel">
+                  <i className="bx bx-images"></i> Медиа ({result.media.length})
+                </div>
+                <div className="UserApps-MediaGrid">
+                  {result.media.map((m, idx) => {
+                    const imgIdx = m.type === 'image'
+                      ? imagesOnly.indexOf(`${API_URL}${m.url}`)
+                      : -1;
+                    return (
+                      <div className="UserApps-MediaItem" key={idx}>
+                        {m.type === 'video' ? (
+                          <video src={`${API_URL}${m.url}`} controls playsInline preload="metadata" />
+                        ) : (
+                          <>
+                            <img
+                              src={`${API_URL}${m.url}`}
+                              alt={`Медиа ${idx + 1}`}
+                              loading="lazy"
+                              onClick={() => openLightbox(imagesOnly, imgIdx)}
+                            />
+                            <span className="UserApps-ZoomHint">
+                              <i className="bx bx-zoom-in"></i>
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Нет медиа */}
+            {(!result.media || result.media.length === 0) && (
+              <div className="UserApps-NoMedia">
+                <i className="bx bx-image"></i>
+                <span>Медиафайлы не прикреплены</span>
+              </div>
+            )}
+
+            {/* Кнопка «Новый поиск» */}
+            <button
+              type="button"
+              className="Modal-Submit"
+              style={{ marginTop: 22 }}
+              onClick={() => { setResult(null); setSearchValue(''); setError(''); }}
+            >
+              <i className="bx bx-search"></i> Новый поиск
+            </button>
+          </>
+        )}
+
+        {/* ================= ЛАЙТБОКС ================= */}
+        {lightbox && (
+          <div className="Lightbox-Overlay" onClick={() => setLightbox(null)}>
+            <button type="button" className="Lightbox-Close" onClick={() => setLightbox(null)} aria-label="Закрыть просмотр">
+              <i className="bx bx-x"></i>
+            </button>
+
+            {lightbox.images.length > 1 && (
+              <button
+                type="button"
+                className="Lightbox-Arrow Lightbox-Arrow_Left"
+                onClick={(e) => { e.stopPropagation(); prevImage(); }}
+                aria-label="Предыдущее фото"
+              >
+                <i className="bx bx-chevron-left"></i>
+              </button>
+            )}
+
+            <img
+              className="Lightbox-Image"
+              src={lightbox.images[lightbox.index]}
+              alt={`Просмотр фото ${lightbox.index + 1}`}
+              onClick={(e) => e.stopPropagation()}
             />
+
+            {lightbox.images.length > 1 && (
+              <button
+                type="button"
+                className="Lightbox-Arrow Lightbox-Arrow_Right"
+                onClick={(e) => { e.stopPropagation(); nextImage(); }}
+                aria-label="Следующее фото"
+              >
+                <i className="bx bx-chevron-right"></i>
+              </button>
+            )}
+
+            {lightbox.images.length > 1 && (
+              <div className="Lightbox-Counter">
+                {lightbox.index + 1} / {lightbox.images.length}
+              </div>
+            )}
           </div>
-        </div>
-        <button type="button" className="Modal-Submit">
-          <i className="bx bx-search"></i>
-          Найти
-        </button>
+        )}
       </div>
     </div>
   );

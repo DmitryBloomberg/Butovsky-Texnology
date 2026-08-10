@@ -288,5 +288,68 @@ app.get('/api/requests/my', async (req, res) => {
   }
 });
 
+
+// ================= ПОЛУЧЕНИЕ ЗАЯВКИ ПО НОМЕРУ =================
+app.get('/api/requests/:id', async (req, res) => {
+  try {
+    const hash = req.cookies[COOKIE_NAME];
+    if (!hash) return res.status(401).json({ success: false, message: 'Не авторизован' });
+
+    const user = await findUserByHash(hash);
+    if (!user) return res.status(401).json({ success: false, message: 'Пользователь не найден' });
+
+    const requestId = parseInt(req.params.id, 10);
+    if (isNaN(requestId)) {
+      return res.status(400).json({ success: false, message: 'Введите числовой номер заявки' });
+    }
+
+    const { rows } = await pool.query(
+      `SELECT id, userid, entrance, floor, category, status
+       FROM requests WHERE id = $1`,
+      [requestId]
+    );
+
+    if (!rows.length) {
+      return res.status(404).json({ success: false, message: `Заявка № ${requestId} не найдена` });
+    }
+
+    const row = rows[0];
+    const requestDir = path.join(MINIDATA_DIR, String(row.id));
+    let mediaFiles = [];
+    let description = 'Нет описания';
+
+    if (fs.existsSync(requestDir)) {
+      const descPath = path.join(requestDir, 'description.txt');
+      if (fs.existsSync(descPath)) {
+        description = fs.readFileSync(descPath, 'utf-8');
+      }
+      const files = fs.readdirSync(requestDir).filter((f) => f.startsWith('media_'));
+      mediaFiles = files
+        .sort()                       // media_0, media_1, …
+        .map((f) => ({
+          filename: f,
+          url: `/api/media/${row.id}/${f}`,
+          type: /\.(mp4|webm|ogg|mov)$/i.test(f) ? 'video' : 'image',
+        }));
+    }
+
+    return res.json({
+      success: true,
+      request: {
+        id: row.id,
+        entrance: row.entrance,
+        floor: row.floor,
+        category: row.category,
+        status: row.status,
+        description,
+        media: mediaFiles,
+      },
+    });
+  } catch (err) {
+    console.error('GET REQUEST BY ID ERROR:', err);
+    return res.status(500).json({ success: false, message: 'Ошибка сервера' });
+  }
+});
+
 const PORT = 5000;
 app.listen(PORT, () => console.log(`✅ Сервер запущен: http://localhost:${PORT}`));

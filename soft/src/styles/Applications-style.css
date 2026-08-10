@@ -298,14 +298,7 @@
     box-shadow: 0 4px 12px rgba(106, 90, 205, 0.4);
 }
 
-.Application-ALL-Right_container {
-    width: 80%;
-    height: 100vh;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-}
+
 
 /* ============================================
    📱 АДАПТИВНОСТЬ
@@ -360,13 +353,14 @@
 ============================================ */
 .Application-ALL-Right_container {
   width: 80%;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  justify-content: flex-start; /* было center — из-за этого срезался верх */
+  align-items: center;         /* карточка по центру горизонтали */
   padding: 40px 32px;
   box-sizing: border-box;
-  overflow-y: auto;
+  overflow-y: auto;            /* скроллится панель, а не карточка */
   position: relative;
   z-index: 2;
 }
@@ -379,45 +373,6 @@
   border-radius: 10px;
 }
 
-/* ============================================
-   🪟 СТЕКЛЯННАЯ КАРТОЧКА
-============================================ */
-.Application-Container-Information {
-  width: min(780px, 100%);
-  box-sizing: border-box;
-  background: rgba(20, 17, 45, 0.55);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 22px;
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  padding: 28px 30px 30px;
-  position: relative;
-  overflow: hidden;
-  animation: cardIn 0.55s cubic-bezier(0.4, 0, 0.2, 1) backwards;
-}
-
-/* Градиентная полоска сверху карточки */
-.Application-Container-Information::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #6a5acd, #ff6b9d, #6a5acd);
-  background-size: 200% 100%;
-  animation: gradientMove 6s linear infinite;
-}
-
-@keyframes cardIn {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes gradientMove {
-  0%   { background-position: 0% 0; }
-  100% { background-position: 200% 0; }
-}
 
 /* ============================================
    🏷 ШАПКА КАРТОЧКИ + СТАТУС-БЕЙДЖ

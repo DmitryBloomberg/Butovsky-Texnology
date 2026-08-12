@@ -1,32 +1,190 @@
-/* ===== Корневой контейнер ===== */
+/* ============================================
+   ГЛОБАЛЬНЫЕ СБРОСЫ И ПЕРЕМЕННЫЕ
+============================================ */
+
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ============================================
+   КОРНЕВОЙ КОНТЕЙНЕР
+============================================ */
 .App {
   display: flex;
   flex-direction: column;
   width: 100%;
   min-height: 100vh;
-  box-sizing: border-box;
+  min-height: 100dvh;
 }
 
-/* ===== Верхняя часть (две колонки) ===== */
+/* ============================================
+   ВЕРХНЯЯ ЧАСТЬ (РЕГИСТРАЦИЯ)
+============================================ */
 .TopContainer {
   display: flex;
   flex-direction: row;
-  height: 100vh;
   width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
 }
 
-/* Левая колонка – форма */
+/* ===== Левая колонка — форма ===== */
 .Autintefication {
   width: 50%;
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgb(21, 19, 47);
-  box-sizing: border-box;
+  background-color: var(--color-bg-primary);
+  padding: 20px;
+  overflow-y: auto;
+  position: relative;
+  z-index: 2;
 }
 
+/* Логотип */
+.Logo {
+  width: 90%;
+  max-width: 400px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.Logo i {
+  color: white;
+  font-size: clamp(18px, 3vw, 24px);
+}
+
+.Logo h1 {
+  color: white;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: bold;
+  font-size: clamp(22px, 4vw, 30px);
+  margin: 0 10px;
+}
+
+/* Контейнер форм */
+.Autintefication-Login_Container {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ===== Форма регистрации ===== */
+.Autintefication-Login_Container-REG,
+.Autintefication-Login_Container-LOG {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.Autintefication-Login_Container-REG h1,
+.Autintefication-Login_Container-LOG h1 {
+  color: white;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  font-size: clamp(18px, 3vw, 22px);
+  margin-bottom: 12px;
+}
+
+.Autintefication-Login_Container-REG input,
+.Autintefication-Login_Container-LOG input {
+  display: block;
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  font-size: 16px; /* предотвращает zoom на iOS */
+  line-height: 1.5;
+  color: #fdfdfd;
+  font-family: system-ui, -apple-system, sans-serif;
+  background-color: #16163a;
+  border: 1px solid #10102c;
+  border-radius: var(--radius-sm);
+  outline: none;
+  margin: 6px 0;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.Autintefication-Login_Container-REG input:focus,
+.Autintefication-Login_Container-LOG input:focus {
+  border-color: var(--color-accent-light);
+  box-shadow: 0 0 0 3px rgba(109, 139, 255, 0.15);
+}
+
+.Autintefication-Login_Container-REG input::placeholder,
+.Autintefication-Login_Container-LOG input::placeholder {
+  color: #5d68a8;
+}
+
+.Autintefication-Login_Container-REG button,
+.Autintefication-Login_Container-LOG button {
+  margin: 12px 0;
+  width: 100%;
+  max-width: 280px;
+  min-height: 48px;
+  padding: 14px 24px;
+  color: rgb(224, 224, 224);
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  background-color: #111138;
+  border: 1px solid rgb(22, 28, 72);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  touch-action: manipulation;
+}
+
+.Autintefication-Login_Container-REG button:hover,
+.Autintefication-Login_Container-LOG button:hover {
+  background-color: #121245;
+  transform: translateY(-1px);
+}
+
+.Autintefication-Login_Container-REG button:active,
+.Autintefication-Login_Container-LOG button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.Autintefication-Login_Container-REG button:disabled,
+.Autintefication-Login_Container-LOG button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.Autintefication-Login_Container-REG h3,
+.Autintefication-Login_Container-LOG h3 {
+  color: rgb(207, 207, 207);
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: color 0.2s ease;
+}
+
+.Autintefication-Login_Container-REG h3:hover,
+.Autintefication-Login_Container-LOG h3:hover {
+  color: var(--color-accent-light);
+}
+
+/* Ошибка авторизации */
 .auth-error {
   color: #ff8a8a;
   font-family: system-ui, sans-serif;
@@ -36,265 +194,49 @@
   cursor: default;
 }
 
-.Autintefication-Login_Container {
-  width: 50%;
-  height: 80%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Логотип */
-.Logo {
-  width: 90%;
-  height: 5vh;
-  display: flex;
-  align-items: center;
-}
-.Logo i {
-  color: white;
-  font-size: 20px;
-}
-.Logo h1 {
-  color: white;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  font-weight: bold;
-  font-size: 30px;
-  margin: 0px 10px;
-}
-
-/* Регистрация */
-.Autintefication-Login_Container-REG {
-  width: 100%;
-  height: 80%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-.Autintefication-Login_Container-REG h1 {
-  color: white;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  font-weight: 400;
-  font-size: 20px;
-}
-.Autintefication-Login_Container-REG input {
-  display: block;
-  width: 100%;
-  height: calc(2.25rem + 2px);
-  padding: 0.375rem 0.75rem;
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #fdfdfd;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background-color: #16163a;
-  background-clip: padding-box;
-  border: 1px solid #10102c;
-  border-radius: 0.25rem;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  outline: none;
-  margin: 10px 0px;
-}
-.Autintefication-Login_Container-REG button {
-  margin: 10px 0px;
-  width: 70%;
-  height: 15%;
-  color: rgb(224, 224, 224);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  font-weight: 400;
-  font-size: 15px;
-  background-color: #111138;
-  border: 1px solid rgb(22, 28, 72);
-  border-radius: 5px;
-  cursor: pointer;
-}
-.Autintefication-Login_Container-REG button:hover {
-  background-color: #121245;
-}
-.Autintefication-Login_Container-REG h3 {
-  color: rgb(207, 207, 207);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-/* Вход */
-.Autintefication-Login_Container-LOG {
-  width: 100%;
-  height: 80%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-.Autintefication-Login_Container-LOG h1 {
-  color: white;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  font-weight: 400;
-  font-size: 20px;
-}
-.Autintefication-Login_Container-LOG input {
-  display: block;
-  width: 100%;
-  height: calc(2.25rem + 1px);
-  padding: 0.375rem 0.75rem;
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #fdfdfd;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background-color: #16163a;
-  background-clip: padding-box;
-  border: 1px solid #10102c;
-  border-radius: 0.25rem;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  outline: none;
-  margin: 10px 0px;
-}
-.Autintefication-Login_Container-LOG button {
-  margin: 10px 0px;
-  width: 70%;
-  height: 10%;
-  color: rgb(224, 224, 224);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  font-weight: 400;
-  font-size: 15px;
-  background-color: #111138;
-  border: 1px solid rgb(22, 28, 72);
-  border-radius: 5px;
-  cursor: pointer;
-}
-.Autintefication-Login_Container-LOG button:hover {
-  background-color: #121245;
-}
-.Autintefication-Login_Container-LOG h3 {
-  color: rgb(207, 207, 207);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-/* Правая колонка – анимированный текст */
-.Information {
-  width: 50%;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-image: url('https://i.pinimg.com/originals/0f/d7/7c/0fd77c78e7dae4751eb19cf7ba3f9902.gif?nii=t');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-}
+/* ===== Правая колонка — видео-фон ===== */
 .video-bg {
-  top: 0;
-  left: 0;
   width: 50%;
   height: 100%;
+  position: relative;
+  overflow: hidden;
   z-index: 0;
-  pointer-events: none;
 }
+
 .video-bg video {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+  display: block;
 }
+
+/* Информация поверх видео (если есть) */
+.Information {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
 .Information h1 {
   color: white;
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
-  font-size: 3rem;
+  font-size: clamp(1.5rem, 4vw, 3rem);
   font-family: system-ui, sans-serif;
   text-align: center;
   padding: 0 20px;
 }
+
 .Information i {
   color: white;
-  font-size: 50px;
+  font-size: clamp(30px, 5vw, 50px);
 }
 
-/* ===== Нижняя секция – бегущая строка (циклично, без разрывов) ===== */
-.BottomContainer {
-  width: 100%;
-  background-color: #0f0e29;
-  padding: 30px 0 40px 0;
-  text-align: center;
-  overflow: hidden;
-  border-top: 1px solid #2a2a5a;
-}
-.BottomContainer h2 {
-  color: #fff;
-  font-family: system-ui, sans-serif;
-  font-weight: 300;
-  font-size: 1.8rem;
-  margin-bottom: 25px;
-  letter-spacing: 1px;
-}
-.MarqueeWrapper {
-  width: 100%;
-  overflow: hidden;
-  position: relative;
-}
-.MarqueeTrack {
-  display: flex;
-  width: max-content;
-  animation: scrollMarquee 60s linear infinite;
-}
-.MarqueeWrapper:hover .MarqueeTrack {
-  animation-play-state: paused;
-}
-.MarqueeGroup {
-  display: flex;
-  gap: 40px;
-  padding-right: 40px;
-  flex-shrink: 0;
-  width: max-content;
-}
-.MarqueeItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  color: #ccc;
-  font-family: system-ui, sans-serif;
-  font-size: 14px;
-  gap: 6px;
-  transition: transform 0.2s;
-}
-.MarqueeItem img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #3a3a7a;
-  background-color: #1a1a3a;
-  padding: 4px;
-}
-.MarqueeItem span {
-  font-weight: 300;
-  font-size: 13px;
-  color: #aaa;
-  white-space: nowrap;
-}
-
-/* Ссылка на Dashboard */
+/* ===== Ссылка на Dashboard ===== */
 .dashboard-link {
   display: block;
   margin: 15px 0 5px 0;
@@ -306,35 +248,44 @@
   font-weight: 500;
   text-align: center;
 }
+
 .dashboard-link:hover {
   color: #80c1ff;
   text-decoration: underline;
 }
 
-/* ===== Стили для страницы Dashboard ===== */
+/* ============================================
+   DASHBOARD — ГЛАВНАЯ СТРАНИЦА ПОЛЬЗОВАТЕЛЯ
+============================================ */
 .Dashboard {
   position: relative;
   width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
-/* Видео зафиксировано и всегда остаётся на фоне */
+/* ===== Видео-фон (фиксированный) ===== */
 .Dashboard-Video {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
-  height: 100dvh; /* корректная высота на мобильных (адресная строка) */
+  height: 100dvh;
   z-index: 0;
   pointer-events: none;
+  overflow: hidden;
 }
+
 .Dashboard-Video video {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
-/* Лёгкое затемнение видео, чтобы текст был читаемым */
+/* Затемнение видео */
 .Dashboard-Dim {
   position: absolute;
   top: 0;
@@ -344,7 +295,7 @@
   background: rgba(8, 8, 25, 0.35);
 }
 
-/* Первый экран с «Привет» */
+/* ===== Первый экран (Hero) ===== */
 .Dashboard-Hero {
   position: relative;
   z-index: 1;
@@ -354,73 +305,70 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-.Dashboard-Hero h1,
-.Dashboard-Hero h2 {
-  color: white;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
-    sans-serif;
-  text-wrap: balance;
+  padding: 20px;
   text-align: center;
 }
+
 .Dashboard-Hero h1 {
-  margin: 0;
-  font-size: clamp(2.5rem, 6vw, 60px);
+  color: white;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: clamp(1.8rem, 6vw, 60px);
   font-weight: 800;
-  line-height: 1.05;
+  line-height: 1.1;
   letter-spacing: -0.02em;
+  margin: 0 0 12px;
   text-shadow:
-    0 1px 2px rgb(0 0 0 / 0.45),
-    0 4px 16px rgb(0 0 0 / 0.35),
-    0 8px 32px rgb(0 0 0 / 0.25);
+    0 1px 2px rgba(0, 0, 0, 0.45),
+    0 4px 16px rgba(0, 0, 0, 0.35),
+    0 8px 32px rgba(0, 0, 0, 0.25);
+  text-wrap: balance;
 }
+
 .Dashboard-Hero h2 {
-  margin: 0;
-  font-size: clamp(1.25rem, 3vw, 30px);
+  color: white;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: clamp(1rem, 3vw, 30px);
   font-weight: 400;
   line-height: 1.35;
+  margin: 0;
   text-shadow:
-    0 1px 2px rgb(0 0 0 / 0.4),
-    0 4px 16px rgb(0 0 0 / 0.3);
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 4px 16px rgba(0, 0, 0, 0.3);
+  text-wrap: balance;
 }
+
 .Dashboard-Hero button {
   cursor: pointer;
-  margin: 15px 0px;
-  font-size: 15px;
-  width: 10%;
+  margin: 20px 0;
+  font-size: clamp(14px, 2vw, 16px);
+  width: auto;
   min-width: 160px;
-  padding: 14px 0;
+  max-width: 90%;
+  padding: 14px 32px;
   color: white;
   font-weight: 500;
-  border-radius: 5px;
+  border-radius: var(--radius-sm);
   border: none;
-  background-image: url('https://i.pinimg.com/originals/0f/d7/7c/0fd77c78e7dae4751eb19cf7ba3f9902.gif?nii=t');
-  background-position: center center;
-  background-repeat: no-repeat;
-  box-shadow: 10px 0px 10px 0px rgb(38, 38, 38);
-  transition: all 0.3s ease;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background: linear-gradient(135deg, var(--color-accent), #7a3ff0);
+  box-shadow: 0 8px 25px rgba(53, 80, 224, 0.4);
+  transition: var(--transition);
+  font-family: system-ui, -apple-system, sans-serif;
+  touch-action: manipulation;
 }
+
 .Dashboard-Hero button:hover {
   transform: translateY(-2px);
-  filter: brightness(1.15);
+  box-shadow: 0 12px 35px rgba(53, 80, 224, 0.55);
 }
-.Dashboard-Hello {
-  color: #ffffff;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-weight: 700;
-  font-size: 4rem;
-  margin: 0;
-  letter-spacing: 2px;
-  text-shadow: 0 4px 25px rgba(0, 0, 0, 0.7);
-  animation: fadeUp 0.8s ease-out forwards;
+
+.Dashboard-Hero button:active {
+  transform: translateY(0) scale(0.97);
 }
 
 /* Стрелка «листай вниз» */
 .Dashboard-Scroll {
   position: absolute;
-  bottom: 30px;
+  bottom: max(30px, var(--safe-bottom));
   left: 50%;
   transform: translateX(-50%);
   color: rgba(255, 255, 255, 0.85);
@@ -428,298 +376,206 @@
   animation: bounceDown 1.6s infinite;
 }
 
-/* Блок с карточками: наезжает поверх видео при скролле */
-.Dashboard-Content {
-  position: relative;
-  background-color: rgb(21, 19, 47);
-  border-radius: 32px 32px 0 0;
-  box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.6);
-  padding: 50px 20px 60px 20px;
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  min-height: 50vh;
-  box-sizing: border-box;
-}
-.Dashboard-Content .Response {
-  width: 100%;
-  max-width: 520px;
-  margin: 0;
-}
-
-/* Карточки */
-.Response {
-  background-color: #1a235e;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(22, 16, 86, 0.05);
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.Response:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
-}
-.Response-Head {
-  width: 100%;
-  padding: 35px 20px;
-  align-items: center;
-  display: flex;
-  background: linear-gradient(180deg, #131b53 0%, #1a235e 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  box-sizing: border-box;
-}
-.Response-Head i {
-  color: #fcfcfc;
-  font-size: 28px;
-  padding: 10px;
-  border-radius: 50%;
-  margin-right: 8px;
-  flex-shrink: 0;
-}
-.Response-Head h1 {
-  margin: 0;
-  color: white;
-  font-family: system-ui, -apple-system, sans-serif;
-  font-weight: 600;
-  font-size: 22px;
-  letter-spacing: 0.3px;
-}
-.Response-ADD {
-  width: 100%;
-  padding: 25px 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  box-sizing: border-box;
-}
-.Response-ADD button {
-  width: 70%;
-  padding: 16px;
-  background-color: #1a3576;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-.Response-ADD button:hover {
-  background-color: #254a9e;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(26, 53, 118, 0.4);
-}
-.Response-ADD button:active {
-  transform: translateY(0);
-}
-
-/* Анимация стрелки вниз */
 @keyframes bounceDown {
   0%, 100% { transform: translateX(-50%) translateY(0); }
   50%      { transform: translateX(-50%) translateY(12px); }
 }
 
-/* ===== Адаптация Dashboard под мобильные ===== */
-@media (max-width: 576px) {
-  .Dashboard-Hello {
-    font-size: 2.6rem;
-  }
-  .Dashboard-Content {
-    padding: 40px 16px 50px 16px;
-    border-radius: 24px 24px 0 0;
-    gap: 18px;
-    flex-direction: column;
-  }
-  .Response-Head {
-    padding: 24px 16px;
-  }
-  .Response-Head h1 {
-    font-size: 17px;
-  }
-  .Response-Head i {
-    font-size: 24px;
-    padding: 8px;
-  }
-  .Response-ADD {
-    padding: 18px 16px;
-  }
-  .Response-ADD button {
-    width: 100%; /* кнопка на всю ширину на телефоне */
-    padding: 14px;
-    font-size: 15px;
-  }
+/* ===== Контент (карточки) ===== */
+.Dashboard-Content {
+  position: relative;
+  z-index: 1;
+  background-color: var(--color-bg-primary);
+  border-radius: 32px 32px 0 0;
+  box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.6);
+  padding: 50px 24px 60px;
+  display: flex;
+  align-items: stretch;
+  gap: 24px;
+  min-height: 50vh;
+  flex-wrap: wrap;
+}
+
+.Dashboard-Content .Response {
+  flex: 1;
+  min-width: 280px;
+  max-width: 520px;
+}
+
+/* ===== Карточки действий ===== */
+.Response {
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(22, 16, 86, 0.05);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.Response:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
+}
+
+.Response-Head {
+  width: 100%;
+  padding: 28px 20px;
+  align-items: center;
+  display: flex;
+  background: linear-gradient(180deg, #131b53 0%, var(--color-bg-secondary) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.Response-Head i {
+  color: #fcfcfc;
+  font-size: clamp(22px, 3vw, 28px);
+  padding: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.Response-Head h1 {
+  margin: 0;
+  color: white;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 600;
+  font-size: clamp(16px, 2.5vw, 22px);
+  letter-spacing: 0.3px;
+}
+
+.Response-ADD {
+  width: 100%;
+  padding: 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex: 1;
+  align-items: flex-start;
+}
+
+.Response-ADD button {
+  width: 100%;
+  max-width: 280px;
+  padding: 14px 20px;
+  background-color: #1a3576;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: clamp(14px, 2vw, 16px);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  touch-action: manipulation;
+}
+
+.Response-ADD button:hover {
+  background-color: #254a9e;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(26, 53, 118, 0.4);
+}
+
+.Response-ADD button:active {
+  transform: translateY(0) scale(0.97);
 }
 
 /* ===== Блок «Дома доступные к заявкам» ===== */
 .Info {
   position: relative;
-  background-color: rgb(21, 19, 47);
-  padding: 50px 20px 60px 20px;
+  z-index: 1;
+  background-color: var(--color-bg-primary);
+  padding: 50px 24px 60px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 24px;
-  min-height: 50vh;
-  box-sizing: border-box;
-  scroll-margin-top: 20px; /* отступ при скролле к блоку кнопкой «Начать» */
+  min-height: 40vh;
+  scroll-margin-top: 20px;
 }
-.Info h1 {
-  color: white;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  font-weight: 400;
-  font-size: 20px;
-}
-.Info_Homes {
-  width: 100%;
-  height: 70%;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  color: white;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  font-weight: 500;
-  font-size: 20px;
-}
-.Info_Homes i {
-  margin: 0px 10px;
-  color: white;
-  font-size: 30px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-}
+
 .InfoHead {
   width: 100%;
-  height: 30%;
-  margin: 0px 10px;
   display: flex;
+  justify-content: center;
 }
+
 .InfoHead h1 {
   color: white;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
   font-weight: 400;
-  font-size: 30px;
+  font-size: clamp(20px, 4vw, 30px);
+  text-align: center;
 }
 
-/* Адаптив для профиля */
-@media (max-width: 1024px) {
-  .Profile-Body {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  .Profile-Stats {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-@media (max-width: 768px) {
-  .Profile {
-    padding: 20px;
-  }
-  .Profile-Header {
-    flex-wrap: wrap;
-    justify-content: center;
-    text-align: center;
-    gap: 15px;
-  }
-  .Profile-Name {
-    flex: 0 0 100%;
-  }
-  .Profile-Actions {
-    width: 100%;
-    justify-content: center;
-  }
-  .Profile-Stats {
-    grid-template-columns: 1fr;
-  }
-  .Dashboard-Main {
-    width: 100% !important;
-    height: auto !important;
-    min-height: 100vh;
-  }
-  .Profile {
-    width: 100% !important;
-  }
+.Info_Homes {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: white;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+  font-size: clamp(14px, 2.5vw, 20px);
+  text-align: center;
 }
 
-/* Анимация появления (опционально) */
-.Profile-Header,
-.Profile-Info,
-.Profile-Subscription,
-.Profile-Stats {
-  animation: fadeUp 0.6s ease-out forwards;
-}
-.Profile-Header { animation-delay: 0.05s; }
-.Profile-Info { animation-delay: 0.1s; }
-.Profile-Subscription { animation-delay: 0.15s; }
-.Profile-Stats { animation-delay: 0.2s; }
-
-@keyframes fadeUp {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
+.Info_Homes i {
+  color: white;
+  font-size: clamp(22px, 3vw, 30px);
+  flex-shrink: 0;
 }
 
-/* Ключевая анимация – сдвиг ровно на одну половину дорожки */
-@keyframes scrollMarquee {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-/* ================================================== */
-/* ===== МОДАЛЬНОЕ ОКНО «ОФОРМИТЬ ЗАЯВКУ» =========== */
-/* ================================================== */
-
-/* Затемнённая размытая подложка поверх ВСЕГО сайта */
+/* ============================================
+   МОДАЛЬНЫЕ ОКНА (общие)
+============================================ */
 .Modal-Overlay {
   position: fixed;
   inset: 0;
-  z-index: 1000; /* выше видео (0) и контента (1) */
+  z-index: 1000;
   background: rgba(6, 7, 25, 0.72);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
-  box-sizing: border-box;
+  padding: 16px;
   animation: modalFadeIn 0.25s ease-out;
 }
 
-/* Само окно */
 .Modal {
   position: relative;
   width: 100%;
   max-width: 540px;
   max-height: 90vh;
+  max-height: calc(100dvh - 32px);
   overflow-y: auto;
-  box-sizing: border-box;
-  padding: 42px 38px 38px;
-  border-radius: 24px;
+  -webkit-overflow-scrolling: touch;
+  padding: 42px 32px 32px;
+  border-radius: var(--radius-xl);
   background: linear-gradient(160deg, #1c2566 0%, #151c52 45%, #10153f 100%);
-  border: 1px solid rgba(140, 160, 255, 0.18);
+  border: 1px solid var(--color-border);
   box-shadow:
     0 30px 90px rgba(0, 0, 0, 0.65),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
   animation: modalSlideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Красивый скроллбар внутри модалки */
-.Modal::-webkit-scrollbar { width: 8px; }
+.Modal::-webkit-scrollbar { width: 6px; }
 .Modal::-webkit-scrollbar-thumb { background: rgba(120, 140, 255, 0.35); border-radius: 8px; }
 .Modal::-webkit-scrollbar-track { background: transparent; }
 
-/* Кнопка закрытия (крестик) */
+/* Кнопка закрытия */
 .Modal-Close {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 40px;
-  height: 40px;
+  top: 14px;
+  right: 14px;
+  width: 44px;
+  height: 44px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -729,9 +585,11 @@
   color: #cfd6ff;
   font-size: 24px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: var(--transition);
   z-index: 2;
+  touch-action: manipulation;
 }
+
 .Modal-Close:hover {
   background: rgba(255, 90, 90, 0.15);
   border-color: rgba(255, 90, 90, 0.35);
@@ -742,26 +600,29 @@
 /* Шапка модалки */
 .Modal-Header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
 }
+
 .Modal-Header i {
-  font-size: 46px;
+  font-size: clamp(36px, 6vw, 46px);
   color: #7d95ff;
   text-shadow: 0 0 25px rgba(125, 149, 255, 0.5);
 }
+
 .Modal-Header h1 {
   margin: 10px 0 6px;
   color: #fff;
   font-family: system-ui, -apple-system, sans-serif;
-  font-size: 26px;
+  font-size: clamp(20px, 4vw, 26px);
   font-weight: 700;
   letter-spacing: 0.3px;
 }
+
 .Modal-Header p {
   margin: 0;
-  color: #9aa5d9;
+  color: var(--color-text-muted);
   font-family: system-ui, -apple-system, sans-serif;
-  font-size: 14px;
+  font-size: clamp(12px, 2vw, 14px);
 }
 
 /* Поля формы */
@@ -769,12 +630,14 @@
   display: flex;
   flex-direction: column;
 }
+
 .Modal-Field {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
+
 .Modal-Field label {
   color: #aab6f0;
   font-family: system-ui, -apple-system, sans-serif;
@@ -784,13 +647,13 @@
   text-transform: uppercase;
 }
 
-/* Обёртка с иконкой внутри поля */
 .Modal-InputWrap {
   position: relative;
 }
+
 .Modal-InputWrap > i:first-child {
   position: absolute;
-  left: 16px;
+  left: 14px;
   top: 50%;
   transform: translateY(-50%);
   color: #6774c9;
@@ -798,7 +661,7 @@
   pointer-events: none;
   transition: color 0.25s ease;
 }
-/* Для textarea иконка прижата к первой строке */
+
 .Modal-InputWrap_Textarea > i:first-child {
   top: 16px;
   transform: none;
@@ -808,32 +671,32 @@
 .Modal-InputWrap select,
 .Modal-InputWrap textarea {
   width: 100%;
-  box-sizing: border-box;
-  padding: 14px 16px 14px 48px;
+  padding: 14px 14px 14px 46px;
   background: rgba(9, 11, 38, 0.65);
   border: 1px solid rgba(122, 140, 255, 0.18);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   color: #fff;
-  font-size: 15px;
+  font-size: 16px; /* предотвращает zoom на iOS */
   font-family: system-ui, -apple-system, sans-serif;
   outline: none;
   transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  -webkit-appearance: none;
+  appearance: none;
 }
+
 .Modal-InputWrap input::placeholder,
 .Modal-InputWrap textarea::placeholder {
   color: #5d68a8;
 }
 
-/* Красивое свечение при фокусе */
 .Modal-InputWrap input:focus,
 .Modal-InputWrap select:focus,
 .Modal-InputWrap textarea:focus {
-  border-color: #6d8bff;
+  border-color: var(--color-accent-light);
   background: rgba(13, 16, 52, 0.9);
-  box-shadow:
-    0 0 0 4px rgba(109, 139, 255, 0.18),
-    0 6px 20px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0 0 4px rgba(109, 139, 255, 0.18);
 }
+
 .Modal-InputWrap:focus-within > i:first-child {
   color: #8fa5ff;
 }
@@ -844,19 +707,18 @@
   line-height: 1.5;
 }
 
-/* Select */
 .Modal-InputWrap select {
-  appearance: none;
-  -webkit-appearance: none;
   cursor: pointer;
 }
+
 .Modal-InputWrap select option {
   background: #141a4a;
   color: #fff;
 }
+
 .Modal-SelectArrow {
   position: absolute;
-  right: 16px;
+  right: 14px;
   top: 50%;
   transform: translateY(-50%);
   color: #6774c9;
@@ -873,7 +735,7 @@
   justify-content: center;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(135deg, #3550e0 0%, #7a3ff0 100%);
+  background: linear-gradient(135deg, var(--color-accent) 0%, #7a3ff0 100%);
   color: #fff;
   font-family: system-ui, -apple-system, sans-serif;
   font-size: 16px;
@@ -882,100 +744,326 @@
   border-radius: 14px;
   cursor: pointer;
   box-shadow: 0 10px 25px rgba(63, 92, 255, 0.35);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+  transition: var(--transition);
+  touch-action: manipulation;
 }
+
 .Modal-Submit i { font-size: 20px; }
+
 .Modal-Submit:hover {
   transform: translateY(-2px);
   box-shadow: 0 14px 32px rgba(63, 92, 255, 0.5);
   filter: brightness(1.08);
 }
-.Modal-Submit:active { transform: translateY(0); }
 
-/* Экран успеха после отправки */
+.Modal-Submit:active { transform: translateY(0) scale(0.98); }
+
+.Modal-Submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Экран успеха */
 .Modal-Success {
   text-align: center;
   padding: 20px 0 10px;
 }
+
 .Modal-Success > i {
-  font-size: 70px;
+  font-size: clamp(50px, 10vw, 70px);
   color: #4ade80;
   text-shadow: 0 0 30px rgba(74, 222, 128, 0.4);
 }
+
 .Modal-Success h2 {
   color: #fff;
   margin: 14px 0 8px;
   font-family: system-ui, -apple-system, sans-serif;
-  font-size: 24px;
+  font-size: clamp(18px, 4vw, 24px);
 }
+
 .Modal-Success p {
-  color: #9aa5d9;
+  color: var(--color-text-muted);
   font-family: system-ui, -apple-system, sans-serif;
   font-size: 14px;
   line-height: 1.5;
   margin: 0 0 24px;
 }
+
 .Modal-Success button {
   padding: 14px 44px;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  background: linear-gradient(135deg, #3550e0 0%, #7a3ff0 100%);
+  background: linear-gradient(135deg, var(--color-accent) 0%, #7a3ff0 100%);
   color: #fff;
   font-family: system-ui, -apple-system, sans-serif;
   font-size: 15px;
   font-weight: 600;
-  transition: all 0.25s ease;
+  transition: var(--transition);
+  touch-action: manipulation;
 }
+
 .Modal-Success button:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 24px rgba(63, 92, 255, 0.45);
 }
 
-/* Анимации появления модалки */
+/* Анимации модалки */
 @keyframes modalFadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
+
 @keyframes modalSlideUp {
   from { opacity: 0; transform: translateY(40px) scale(0.96); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* Адаптив модалки */
-@media (max-width: 576px) {
-  .Modal {
-    padding: 30px 20px 26px;
-    border-radius: 20px;
+/* ============================================
+   АДАПТИВНОСТЬ — ПЛАНШЕТ (≤1024px)
+============================================ */
+@media (max-width: 1024px) {
+  .Dashboard-Content {
+    padding: 40px 20px 50px;
+    gap: 20px;
   }
-  .Modal-Header h1 {
-    font-size: 22px;
-  }
-  .Modal-InputWrap input,
-  .Modal-InputWrap select,
-  .Modal-InputWrap textarea {
-    font-size: 14px;
-    padding: 12px 14px 12px 44px;
+
+  .Dashboard-Content .Response {
+    min-width: 250px;
   }
 }
 
-/* ===== Адаптивность главной страницы ===== */
+/* ============================================
+   АДАПТИВНОСТЬ — ПЛАНШЕТ ПОРТРЕТ (≤768px)
+============================================ */
 @media (max-width: 768px) {
+  /* Регистрация: видео на задний план */
   .TopContainer {
     flex-direction: column;
     height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
   }
-  .Autintefication,
-  .Information {
-    width: 100% !important;
-    height: 100vh !important;
+
+  .Autintefication {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 40px 20px;
+    padding-top: calc(40px + var(--safe-top));
+    padding-bottom: calc(40px + var(--safe-bottom));
   }
-  .MarqueeItem img {
+
+  /* Видео становится фоном всей страницы */
+  .video-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.3;
+  }
+
+  .Autintefication {
+    position: relative;
+    z-index: 2;
+    background: rgba(21, 19, 47, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* Dashboard */
+  .Dashboard-Content {
+    flex-direction: column;
+    align-items: center;
+    border-radius: 24px 24px 0 0;
+    padding: 36px 16px 50px;
+  }
+
+  .Dashboard-Content .Response {
+    width: 100%;
+    max-width: 100%;
+    min-width: unset;
+  }
+
+  .Response-Head {
+    padding: 24px 16px;
+  }
+
+  .Response-ADD {
+    padding: 20px 16px;
+  }
+
+  .Response-ADD button {
+    max-width: 100%;
+  }
+
+  .Info {
+    padding: 40px 16px 50px;
+  }
+}
+
+/* ============================================
+   АДАПТИВНОСТЬ — МОБИЛЬНЫЙ (≤576px)
+============================================ */
+@media (max-width: 576px) {
+  .Autintefication {
+    padding: 24px 16px;
+    padding-top: calc(24px + var(--safe-top));
+    padding-bottom: calc(24px + var(--safe-bottom));
+  }
+
+  .Logo {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .Autintefication-Login_Container {
+    max-width: 100%;
+  }
+
+  .Autintefication-Login_Container-REG input,
+  .Autintefication-Login_Container-LOG input {
+    height: 46px;
+    font-size: 16px;
+  }
+
+  .Autintefication-Login_Container-REG button,
+  .Autintefication-Login_Container-LOG button {
+    max-width: 100%;
+    min-height: 50px;
+    font-size: 16px;
+  }
+
+  /* Dashboard Hero */
+  .Dashboard-Hero {
+    padding: 16px;
+  }
+
+  .Dashboard-Hero button {
+    width: 100%;
+    max-width: 100%;
+    padding: 16px;
+  }
+
+  .Dashboard-Scroll {
+    font-size: 28px;
+    bottom: max(20px, var(--safe-bottom));
+  }
+
+  /* Модалки на весь экран */
+  .Modal-Overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .Modal {
+    max-width: 100%;
+    max-height: 95vh;
+    max-height: calc(100dvh - 10px);
+    border-radius: 24px 24px 0 0;
+    padding: 32px 20px 24px;
+    padding-bottom: calc(24px + var(--safe-bottom));
+  }
+
+  .Modal-Close {
+    top: 12px;
+    right: 12px;
     width: 40px;
     height: 40px;
   }
-  .MarqueeGroup {
-    gap: 25px;
-    padding-right: 25px;
+
+  .Modal-InputWrap input,
+  .Modal-InputWrap select,
+  .Modal-InputWrap textarea {
+    padding: 12px 12px 12px 42px;
+    font-size: 16px;
+  }
+}
+
+/* ============================================
+   АДАПТИВНОСТЬ — МАЛЕНЬКИЙ МОБИЛЬНЫЙ (≤380px)
+============================================ */
+@media (max-width: 380px) {
+  .Autintefication {
+    padding: 16px 12px;
+  }
+
+  .Dashboard-Hero h1 {
+    font-size: 1.6rem;
+  }
+
+  .Dashboard-Hero h2 {
+    font-size: 0.95rem;
+  }
+
+  .Response-Head h1 {
+    font-size: 15px;
+  }
+
+  .Modal {
+    padding: 28px 14px 20px;
+  }
+}
+
+/* ============================================
+   LANDSCAPE МОБИЛЬНЫЙ
+============================================ */
+@media (max-height: 500px) and (orientation: landscape) {
+  .Dashboard-Hero {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 40px 20px;
+  }
+
+  .Dashboard-Scroll {
+    display: none;
+  }
+
+  .Autintefication {
+    min-height: auto;
+    padding: 20px;
+  }
+
+  .Modal {
+    max-height: 95vh;
+  }
+}
+
+/* ============================================
+   НОУТБУК / БОЛЬШИЕ ЭКРАНЫ (≥1440px)
+============================================ */
+@media (min-width: 1440px) {
+  .Dashboard-Content {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .Info {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .Autintefication-Login_Container {
+    max-width: 460px;
+  }
+}
+
+/* ============================================
+   УМЕНЬШЕННОЕ ДВИЖЕНИЕ (доступность)
+============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

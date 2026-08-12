@@ -1,9 +1,39 @@
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+:root {
+  --color-bg-primary: #15132f;
+  --color-bg-secondary: #1a235e;
+  --color-bg-card: #1c2566;
+  --color-accent: #3550e0;
+  --color-accent-light: #6d8bff;
+  --color-text: #ffffff;
+  --color-text-muted: #9aa5d9;
+  --color-border: rgba(140, 160, 255, 0.18);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.4);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import './styles/App.css';
-import './styles/Applications-style.css'
+import './styles/Applications-style.css';
 
-const API_URL = 'http://localhost:5000';
+const API_URL = 'http://13.143.64.167:5000';
 
 // ========================================
 // === ХУК ПРОВЕРКИ СЕССИИ ================
@@ -21,13 +21,11 @@ function useSessionGuard(allowedStatus) {
           navigate('/', { replace: true });
           return;
         }
-
         // 2) Статус изменился → редирект на правильный маршрут
         if (data.status !== allowedStatus) {
           navigate(data.redirect || '/', { replace: true });
           return;
         }
-
         // 3) Всё в порядке — разрешаем рендер
         setChecked(true);
       })
@@ -37,22 +35,24 @@ function useSessionGuard(allowedStatus) {
       });
   }, [navigate, allowedStatus]);
 
-  return checked; // false = показываем заглушку / ничего не рендерим
+  return checked; // false = ничего не рендерим
 }
 
 // ========================================
-// === ГЛАВНАЯ СТРАНИЦА (без изменений) ====
+// === ГЛАВНАЯ СТРАНИЦА ===================
 // ========================================
 function HomePage() {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
   const [regData, setRegData] = useState({ name: '', surname: '', email: '', password: '' });
   const [logData, setLogData] = useState({ email: '', password: '' });
 
-  const toggleForm = () => { setIsLogin(!isLogin); setError(''); };
+  const toggleForm = () => {
+    setIsLogin(!isLogin);
+    setError('');
+  };
 
   // Повторный заход на сайт: проверяем cookie → уходим по статусу или остаёмся
   useEffect(() => {
@@ -73,7 +73,8 @@ function HomePage() {
   // ===== РЕГИСТРАЦИЯ =====
   const handleRegister = async (e) => {
     e.preventDefault();
-    setError(''); setLoading(true);
+    setError('');
+    setLoading(true);
     try {
       const res = await fetch(`${API_URL}/api/register`, {
         method: 'POST',
@@ -86,13 +87,16 @@ function HomePage() {
       else setError(data.message || 'Ошибка регистрации');
     } catch {
       setError('Сервер недоступен, попробуйте позже');
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   };
 
   // ===== ВХОД =====
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(''); setLoading(true);
+    setError('');
+    setLoading(true);
     try {
       const res = await fetch(`${API_URL}/api/login`, {
         method: 'POST',
@@ -105,7 +109,9 @@ function HomePage() {
       else setError(data.message || 'Неверная почта или пароль');
     } catch {
       setError('Сервер недоступен, попробуйте позже');
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -120,14 +126,38 @@ function HomePage() {
             {!isLogin ? (
               <form className="Autintefication-Login_Container-REG" onSubmit={handleRegister}>
                 <h1>Регистрация</h1>
-                <input name="name" placeholder="Имя" type="text"
-                       value={regData.name} onChange={handleRegChange} required />
-                <input name="surname" placeholder="Фамилия" type="text"
-                       value={regData.surname} onChange={handleRegChange} required />
-                <input name="email" placeholder="Почта" type="email"
-                       value={regData.email} onChange={handleRegChange} required />
-                <input name="password" placeholder="Пароль" type="password"
-                       value={regData.password} onChange={handleRegChange} required />
+                <input
+                  name="name"
+                  placeholder="Имя"
+                  type="text"
+                  value={regData.name}
+                  onChange={handleRegChange}
+                  required
+                />
+                <input
+                  name="surname"
+                  placeholder="Фамилия"
+                  type="text"
+                  value={regData.surname}
+                  onChange={handleRegChange}
+                  required
+                />
+                <input
+                  name="email"
+                  placeholder="Почта"
+                  type="email"
+                  value={regData.email}
+                  onChange={handleRegChange}
+                  required
+                />
+                <input
+                  name="password"
+                  placeholder="Пароль"
+                  type="password"
+                  value={regData.password}
+                  onChange={handleRegChange}
+                  required
+                />
                 <button type="submit" disabled={loading}>
                   {loading ? 'Обработка...' : 'Зарегистрироваться'}
                 </button>
@@ -137,10 +167,22 @@ function HomePage() {
             ) : (
               <form className="Autintefication-Login_Container-LOG" onSubmit={handleLogin}>
                 <h1>Вход</h1>
-                <input name="email" placeholder="Почта" type="email"
-                       value={logData.email} onChange={handleLogChange} required />
-                <input name="password" placeholder="Пароль" type="password"
-                       value={logData.password} onChange={handleLogChange} required />
+                <input
+                  name="email"
+                  placeholder="Почта"
+                  type="email"
+                  value={logData.email}
+                  onChange={handleLogChange}
+                  required
+                />
+                <input
+                  name="password"
+                  placeholder="Пароль"
+                  type="password"
+                  value={logData.password}
+                  onChange={handleLogChange}
+                  required
+                />
                 <button type="submit" disabled={loading}>
                   {loading ? 'Проверка...' : 'Войти'}
                 </button>
@@ -165,9 +207,9 @@ function HomePage() {
 // ========================================
 function RequestModal({ onClose }) {
   const [formData, setFormData] = useState({
-    entrance: '1', // По умолчанию 1
-    floor: '1',    // По умолчанию 1
-    category: 'Уборка', // По умолчанию Уборка
+    entrance: '1',
+    floor: '1',
+    category: 'Уборка',
     description: '',
   });
   const [mediaFiles, setMediaFiles] = useState([]); // { file, preview, type }
@@ -175,22 +217,43 @@ function RequestModal({ onClose }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [requestId, setRequestId] = useState(null); // ID заявки от сервера
-  
   const fileInputRef = useRef(null);
   const MAX_MEDIA = 5;
 
+  // ============================================================
+  // ИСПРАВЛЕНО: blob-ссылки (preview) освобождаются ТОЛЬКО при
+  // размонтировании модалки. Раньше cleanup эффекта срабатывал
+  // при каждом изменении mediaFiles/onClose и отзывал ссылки,
+  // которые ещё используются в <img>/<video> — превью ломались.
+  // ============================================================
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  const mediaFilesRef = useRef(mediaFiles);
+  useEffect(() => {
+    mediaFilesRef.current = mediaFiles;
+  }, [mediaFiles]);
+
   // Закрытие по Esc + блокировка скролла фона
   useEffect(() => {
-    const onKey = (e) => e.key === 'Escape' && onClose();
+    const onKey = (e) => {
+      if (e.key === 'Escape') onCloseRef.current();
+    };
     window.addEventListener('keydown', onKey);
+
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+
     return () => {
       window.removeEventListener('keydown', onKey);
       document.body.style.overflow = prevOverflow;
-      mediaFiles.forEach((m) => URL.revokeObjectURL(m.preview));
+      // Освобождаем blob-ссылки только при закрытии модалки
+      mediaFilesRef.current.forEach((m) => URL.revokeObjectURL(m.preview));
     };
-  }, [onClose, mediaFiles]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -200,14 +263,17 @@ function RequestModal({ onClose }) {
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
+
     const remainingSlots = MAX_MEDIA - mediaFiles.length;
     if (remainingSlots <= 0) return;
+
     const filesToAdd = files.slice(0, remainingSlots);
     const newMedia = filesToAdd.map((file) => ({
       file,
       preview: URL.createObjectURL(file),
       type: file.type.startsWith('video') ? 'video' : 'image',
     }));
+
     setMediaFiles((prev) => [...prev, ...newMedia]);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
@@ -215,7 +281,7 @@ function RequestModal({ onClose }) {
   const removeMedia = (index) => {
     setMediaFiles((prev) => {
       const copy = [...prev];
-      URL.revokeObjectURL(copy[index].preview);
+      URL.revokeObjectURL(copy[index].preview); // отзываем только удаляемый файл
       copy.splice(index, 1);
       return copy;
     });
@@ -225,16 +291,13 @@ function RequestModal({ onClose }) {
     e.preventDefault();
     setLoading(true);
     setError('');
-
     try {
       const formDataToSend = new FormData();
-      
       // Добавляем поля формы
       formDataToSend.append('entrance', formData.entrance);
       formDataToSend.append('floor', formData.floor);
       formDataToSend.append('category', formData.category);
       formDataToSend.append('description', formData.description);
-
       // Добавляем файлы
       mediaFiles.forEach((mediaItem) => {
         formDataToSend.append('media', mediaItem.file);
@@ -242,11 +305,10 @@ function RequestModal({ onClose }) {
 
       const res = await fetch(`${API_URL}/api/requests`, {
         method: 'POST',
-        credentials: 'include', // Передаем cookie для авторизации
+        credentials: 'include', // передаём cookie для авторизации
         body: formDataToSend,
-        // Headers не указываем Content-Type, браузер сам добавит boundary
+        // Content-Type НЕ указываем — браузер сам добавит boundary
       });
-
       const data = await res.json();
 
       if (res.ok && data.success) {
@@ -268,12 +330,7 @@ function RequestModal({ onClose }) {
   return (
     <div className="Modal-Overlay" onClick={onClose}>
       <div className="Modal" onClick={(e) => e.stopPropagation()}>
-        <button
-          type="button"
-          className="Modal-Close"
-          onClick={onClose}
-          aria-label="Закрыть"
-        >
+        <button type="button" className="Modal-Close" onClick={onClose} aria-label="Закрыть">
           <i className="bx bx-x"></i>
         </button>
 
@@ -281,9 +338,7 @@ function RequestModal({ onClose }) {
           <div className="Modal-Success">
             <i className="bx bx-check-circle"></i>
             <h2>Заявка успешно оформлена!</h2>
-            <p>
-              Мы получили ваше обращение и отреагируем в кратчайший срок.
-            </p>
+            <p>Мы получили ваше обращение и отреагируем в кратчайший срок.</p>
             {requestId && (
               <p style={{ fontWeight: 'bold', fontSize: '1.2rem', color: '#4CAF50', marginTop: '10px' }}>
                 Номер вашей заявки: #{requestId}
@@ -300,8 +355,8 @@ function RequestModal({ onClose }) {
               <h1>Оформить заявку</h1>
               <p>Заполните форму и прикрепите фото/видео проблемы</p>
             </div>
+
             <form className="Modal-Form" onSubmit={handleSubmit}>
-              
               {/* Подъезд */}
               <div className="Modal-Field">
                 <label htmlFor="req-entrance">Подъезд</label>
@@ -309,7 +364,7 @@ function RequestModal({ onClose }) {
                   <i className="bx bx-category"></i>
                   <select
                     id="req-entrance"
-                    name="entrance" // ИСПРАВЛЕНО
+                    name="entrance"
                     value={formData.entrance}
                     onChange={handleChange}
                   >
@@ -332,7 +387,7 @@ function RequestModal({ onClose }) {
                   <i className="bx bx-category"></i>
                   <select
                     id="req-floor"
-                    name="floor" // ИСПРАВЛЕНО
+                    name="floor"
                     value={formData.floor}
                     onChange={handleChange}
                   >
@@ -369,7 +424,9 @@ function RequestModal({ onClose }) {
                   {mediaFiles.map((item, idx) => (
                     <div className="Media-Item" key={idx}>
                       {item.type === 'video' ? (
-                        <video src={item.preview} muted playsInline />
+                        // ИСПРАВЛЕНО: controls + preload, чтобы видео
+                        // не отображалось чёрным квадратом
+                        <video src={item.preview} muted playsInline controls preload="metadata" />
                       ) : (
                         <img src={item.preview} alt="upload" />
                       )}
@@ -421,7 +478,11 @@ function RequestModal({ onClose }) {
                 </div>
               </div>
 
-              {error && <div style={{ color: 'red', marginBottom: '10px', textAlign: 'center' }}>{error}</div>}
+              {error && (
+                <div style={{ color: 'red', marginBottom: '10px', textAlign: 'center' }}>
+                  {error}
+                </div>
+              )}
 
               <button type="submit" className="Modal-Submit" disabled={loading}>
                 {loading ? (
@@ -441,18 +502,16 @@ function RequestModal({ onClose }) {
     </div>
   );
 }
+
 // ========================================
-// === Заявки пользователя ===============
+// === ЗАЯВКИ ПОЛЬЗОВАТЕЛЯ ================
 // ========================================
 function User_Applications({ onClose }) {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [expandedId, setExpandedId] = useState(null);
-
-  // ===== ЛАЙТБОКС =====
-  // { images: [url, ...], index: 0 } или null
-  const [lightbox, setLightbox] = useState(null);
+  const [lightbox, setLightbox] = useState(null); // { images: [url,...], index }
 
   // Загрузка заявок
   useEffect(() => {
@@ -472,14 +531,15 @@ function User_Applications({ onClose }) {
   useEffect(() => {
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = prevOverflow; };
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
   }, []);
 
-  // ===== Закрытие по Esc + стрелки в лайтбоксе =====
+  // Закрытие по Esc + стрелки в лайтбоксе
   useEffect(() => {
     const onKey = (e) => {
       if (lightbox) {
-        // Лайтбокс открыт: Esc закрывает фото, стрелки листают
         if (e.key === 'Escape') {
           e.stopPropagation();
           setLightbox(null);
@@ -487,7 +547,7 @@ function User_Applications({ onClose }) {
         if (e.key === 'ArrowRight') nextImage();
         if (e.key === 'ArrowLeft') prevImage();
       } else if (e.key === 'Escape') {
-        onClose(); // Esc без лайтбокса закрывает модалку
+        onClose();
       }
     };
     window.addEventListener('keydown', onKey);
@@ -497,15 +557,9 @@ function User_Applications({ onClose }) {
 
   const toggleExpand = (id) => setExpandedId((p) => (p === id ? null : id));
 
-  // ===== Открыть лайтбокс =====
-  // images — массив URL картинок заявки, index — по какой кликнули
   const openLightbox = (images, index) => setLightbox({ images, index });
-
   const nextImage = () =>
-    setLightbox((lb) =>
-      lb ? { ...lb, index: (lb.index + 1) % lb.images.length } : lb
-    );
-
+    setLightbox((lb) => (lb ? { ...lb, index: (lb.index + 1) % lb.images.length } : lb));
   const prevImage = () =>
     setLightbox((lb) =>
       lb ? { ...lb, index: (lb.index - 1 + lb.images.length) % lb.images.length } : lb
@@ -556,7 +610,6 @@ function User_Applications({ onClose }) {
             {requests.map((req) => {
               const st = statusMap[req.status] || statusMap['Оформлено'];
               const isExpanded = expandedId === req.id;
-
               // Только картинки (для лайтбокса), в порядке отображения
               const imagesOnly = (req.media || [])
                 .filter((m) => m.type === 'image')
@@ -613,11 +666,9 @@ function User_Applications({ onClose }) {
                           </div>
                           <div className="UserApps-MediaGrid">
                             {req.media.map((m, idx) => {
-                              // Позиция картинки среди ТОЛЬКО картинок (для лайтбокса)
                               const imgIdx = m.type === 'image'
                                 ? imagesOnly.indexOf(`${API_URL}${m.url}`)
                                 : -1;
-
                               return (
                                 <div className="UserApps-MediaItem" key={idx}>
                                   {m.type === 'video' ? (
@@ -635,7 +686,6 @@ function User_Applications({ onClose }) {
                                         loading="lazy"
                                         onClick={() => openLightbox(imagesOnly, imgIdx)}
                                       />
-                                      {/* Иконка-подсказка, что фото кликабельно */}
                                       <span className="UserApps-ZoomHint">
                                         <i className="bx bx-zoom-in"></i>
                                       </span>
@@ -665,7 +715,6 @@ function User_Applications({ onClose }) {
         {/* ===== ЛАЙТБОКС (поверх модалки) ===== */}
         {lightbox && (
           <div className="Lightbox-Overlay" onClick={() => setLightbox(null)}>
-            {/* Крестик закрытия */}
             <button
               type="button"
               className="Lightbox-Close"
@@ -674,8 +723,6 @@ function User_Applications({ onClose }) {
             >
               <i className="bx bx-x"></i>
             </button>
-
-            {/* Стрелка влево */}
             {lightbox.images.length > 1 && (
               <button
                 type="button"
@@ -686,16 +733,12 @@ function User_Applications({ onClose }) {
                 <i className="bx bx-chevron-left"></i>
               </button>
             )}
-
-            {/* Само фото (клик по нему не закрывает лайтбокс) */}
             <img
               className="Lightbox-Image"
               src={lightbox.images[lightbox.index]}
               alt={`Просмотр фото ${lightbox.index + 1}`}
               onClick={(e) => e.stopPropagation()}
             />
-
-            {/* Стрелка вправо */}
             {lightbox.images.length > 1 && (
               <button
                 type="button"
@@ -706,8 +749,6 @@ function User_Applications({ onClose }) {
                 <i className="bx bx-chevron-right"></i>
               </button>
             )}
-
-            {/* Счётчик */}
             {lightbox.images.length > 1 && (
               <div className="Lightbox-Counter">
                 {lightbox.index + 1} / {lightbox.images.length}
@@ -721,16 +762,15 @@ function User_Applications({ onClose }) {
 }
 
 // ========================================
-// === Search Application (с результатом) =
+// === ПОИСК ЗАЯВКИ ПО НОМЕРУ =============
 // ========================================
 function Search_Application({ onClose }) {
   const [searchValue, setSearchValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [result, setResult] = useState(null);   // найденная заявка
+  const [result, setResult] = useState(null);
   const [lightbox, setLightbox] = useState(null); // { images, index }
 
-  // ---- Лайтбокс: навигация ----
   const nextImage = () =>
     setLightbox((lb) => (lb ? { ...lb, index: (lb.index + 1) % lb.images.length } : lb));
   const prevImage = () =>
@@ -738,11 +778,14 @@ function Search_Application({ onClose }) {
       lb ? { ...lb, index: (lb.index - 1 + lb.images.length) % lb.images.length } : lb
     );
 
-  // ---- Esc: закрыть лайтбокс или модалку; стрелки для фото ----
+  // Esc: закрыть лайтбокс или модалку; стрелки для фото
   useEffect(() => {
     const onKey = (e) => {
       if (lightbox) {
-        if (e.key === 'Escape') { e.stopPropagation(); setLightbox(null); }
+        if (e.key === 'Escape') {
+          e.stopPropagation();
+          setLightbox(null);
+        }
         if (e.key === 'ArrowRight') nextImage();
         if (e.key === 'ArrowLeft') prevImage();
       } else if (e.key === 'Escape') {
@@ -759,7 +802,6 @@ function Search_Application({ onClose }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lightbox, onClose]);
 
-  // ---- Поиск ----
   const handleSearch = async () => {
     const num = searchValue.trim();
     if (!num) return;
@@ -786,9 +828,9 @@ function Search_Application({ onClose }) {
   const openLightbox = (images, index) => setLightbox({ images, index });
 
   const statusMap = {
-    'Оформлено':              { color: '#6ab7ff', bg: 'rgba(106,183,255,0.12)', border: 'rgba(106,183,255,0.35)' },
-    'В работе':               { color: '#ffb84d', bg: 'rgba(255,184,77,0.12)',  border: 'rgba(255,184,77,0.35)' },
-    'Исполнение утверждено':  { color: '#5ee08a', bg: 'rgba(94,224,138,0.12)',  border: 'rgba(94,224,138,0.35)' },
+    'Оформлено': { color: '#6ab7ff', bg: 'rgba(106,183,255,0.12)', border: 'rgba(106,183,255,0.35)' },
+    'В работе': { color: '#ffb84d', bg: 'rgba(255,184,77,0.12)', border: 'rgba(255,184,77,0.35)' },
+    'Исполнение утверждено': { color: '#5ee08a', bg: 'rgba(94,224,138,0.12)', border: 'rgba(94,224,138,0.35)' },
   };
 
   // Только картинки (для лайтбокса)
@@ -811,7 +853,6 @@ function Search_Application({ onClose }) {
               <h1>Найти заявку</h1>
               <p>Введите номер заявки для поиска</p>
             </div>
-
             <div className="Modal-Field">
               <label htmlFor="search-num">Номер заявки</label>
               <div className="Modal-InputWrap">
@@ -827,14 +868,12 @@ function Search_Application({ onClose }) {
                 />
               </div>
             </div>
-
             {error && (
               <div style={{ color: '#ff8a8a', marginBottom: 14, textAlign: 'center', fontSize: 14 }}>
                 <i className="bx bx-error-circle" style={{ verticalAlign: 'middle', marginRight: 6 }}></i>
                 {error}
               </div>
             )}
-
             <button
               type="button"
               className="Modal-Submit"
@@ -876,7 +915,10 @@ function Search_Application({ onClose }) {
             </div>
 
             {/* Основные поля */}
-            <div className="UserApps-CardBody" style={{ justifyContent: 'center', flexWrap: 'wrap', gap: 16, padding: '0 0 18px' }}>
+            <div
+              className="UserApps-CardBody"
+              style={{ justifyContent: 'center', flexWrap: 'wrap', gap: 16, padding: '0 0 18px' }}
+            >
               <div className="UserApps-InfoRow">
                 <i className="bx bx-door-open"></i>
                 <span>Подъезд: <strong>{result.entrance}</strong></span>
@@ -944,7 +986,6 @@ function Search_Application({ onClose }) {
               </div>
             )}
 
-            {/* Кнопка «Новый поиск» */}
             <button
               type="button"
               className="Modal-Submit"
@@ -959,10 +1000,14 @@ function Search_Application({ onClose }) {
         {/* ================= ЛАЙТБОКС ================= */}
         {lightbox && (
           <div className="Lightbox-Overlay" onClick={() => setLightbox(null)}>
-            <button type="button" className="Lightbox-Close" onClick={() => setLightbox(null)} aria-label="Закрыть просмотр">
+            <button
+              type="button"
+              className="Lightbox-Close"
+              onClick={() => setLightbox(null)}
+              aria-label="Закрыть просмотр"
+            >
               <i className="bx bx-x"></i>
             </button>
-
             {lightbox.images.length > 1 && (
               <button
                 type="button"
@@ -973,14 +1018,12 @@ function Search_Application({ onClose }) {
                 <i className="bx bx-chevron-left"></i>
               </button>
             )}
-
             <img
               className="Lightbox-Image"
               src={lightbox.images[lightbox.index]}
               alt={`Просмотр фото ${lightbox.index + 1}`}
               onClick={(e) => e.stopPropagation()}
             />
-
             {lightbox.images.length > 1 && (
               <button
                 type="button"
@@ -991,7 +1034,6 @@ function Search_Application({ onClose }) {
                 <i className="bx bx-chevron-right"></i>
               </button>
             )}
-
             {lightbox.images.length > 1 && (
               <div className="Lightbox-Counter">
                 {lightbox.index + 1} / {lightbox.images.length}
@@ -1004,12 +1046,8 @@ function Search_Application({ onClose }) {
   );
 }
 
-
 // ========================================
-// === DASHBOARD ===========================
-// ========================================
-// ========================================
-// === DASHBOARD ===========================
+// === DASHBOARD ПОЛЬЗОВАТЕЛЯ =============
 // ========================================
 function Dashboard() {
   const isAllowed = useSessionGuard('user'); // доступен только для status === 'user'
@@ -1058,7 +1096,6 @@ function Dashboard() {
             <button onClick={() => setIsModalOpen(true)}>Обратиться</button>
           </div>
         </div>
-
         <div className="Response">
           <div className="Response-Head">
             <i className="bx bx-file"></i>
@@ -1068,7 +1105,6 @@ function Dashboard() {
             <button onClick={() => setUserApplications(true)}>Посмотреть</button>
           </div>
         </div>
-
         <div className="Response">
           <div className="Response-Head">
             <i className="bx bx-search-alt-2"></i>
@@ -1099,6 +1135,9 @@ function Dashboard() {
   );
 }
 
+// ========================================
+// === АДМИНКА: ВСЕ ЗАЯВКИ ================
+// ========================================
 function Applications() {
   const isAllowed = useSessionGuard('administrator');
   const [requests, setRequests] = useState([]);
@@ -1110,9 +1149,9 @@ function Applications() {
   const [lightbox, setLightbox] = useState(null); // { images: [...], index }
 
   const STATUS = {
-    created:     { label: 'Оформлено',             className: 'status-created' },
-    in_progress: { label: 'В работе',              className: 'status-in_progress' },
-    completed:   { label: 'Исполнение утверждено', className: 'status-completed' },
+    created: { label: 'Оформлено', className: 'status-created' },
+    in_progress: { label: 'В работе', className: 'status-in_progress' },
+    completed: { label: 'Исполнение утверждено', className: 'status-completed' },
   };
   const statusToKey = {
     'Оформлено': 'created',
@@ -1120,11 +1159,15 @@ function Applications() {
     'Исполнение утверждено': 'completed',
   };
   const steps = [
-    { key: 'created',     label: 'Оформлено',  icon: 'bx-edit-alt' },
-    { key: 'in_progress', label: 'В работе',   icon: 'bx-time-five' },
-    { key: 'completed',   label: 'Утверждено', icon: 'bx-check-circle' },
+    { key: 'created', label: 'Оформлено', icon: 'bx-edit-alt' },
+    { key: 'in_progress', label: 'В работе', icon: 'bx-time-five' },
+    { key: 'completed', label: 'Утверждено', icon: 'bx-check-circle' },
   ];
-  const dotColor = { 'Оформлено': '#6ab7ff', 'В работе': '#ffb84d', 'Исполнение утверждено': '#5ee08a' };
+  const dotColor = {
+    'Оформлено': '#6ab7ff',
+    'В работе': '#ffb84d',
+    'Исполнение утверждено': '#5ee08a',
+  };
 
   // ===== Загрузка ВСЕХ заявок =====
   useEffect(() => {
@@ -1144,7 +1187,10 @@ function Applications() {
 
   // Автовыбор: только если выбор пуст или заявки больше нет
   useEffect(() => {
-    if (!requests.length) { setSelectedId(null); return; }
+    if (!requests.length) {
+      setSelectedId(null);
+      return;
+    }
     if (!requests.find((r) => r.id === selectedId)) {
       const list = requests.filter((r) => r.status !== 'Исполнение утверждено');
       setSelectedId(list.length ? list[0].id : requests[0].id);
@@ -1181,7 +1227,9 @@ function Applications() {
   const nextImage = () =>
     setLightbox((lb) => (lb ? { ...lb, index: (lb.index + 1) % lb.images.length } : lb));
   const prevImage = () =>
-    setLightbox((lb) => (lb ? { ...lb, index: (lb.index - 1 + lb.images.length) % lb.images.length } : lb));
+    setLightbox((lb) =>
+      lb ? { ...lb, index: (lb.index - 1 + lb.images.length) % lb.images.length } : lb
+    );
 
   useEffect(() => {
     const onKey = (e) => {
@@ -1241,7 +1289,10 @@ function Applications() {
               Заявка <i className="bx bx-hash"></i> {req.id}
               <span
                 className="req-dot"
-                style={{ background: dotColor[req.status] || '#6ab7ff', color: dotColor[req.status] || '#6ab7ff' }}
+                style={{
+                  background: dotColor[req.status] || '#6ab7ff',
+                  color: dotColor[req.status] || '#6ab7ff',
+                }}
               ></span>
             </button>
           ))}
@@ -1271,7 +1322,9 @@ function Applications() {
               {steps.map((s, i) => (
                 <React.Fragment key={s.key}>
                   {i > 0 && <div className={`Stepper-Line ${i <= stepIndex ? 'filled' : ''}`} />}
-                  <div className={`Stepper-Step ${i < stepIndex ? 'done' : ''} ${i === stepIndex ? 'active' : ''}`}>
+                  <div
+                    className={`Stepper-Step ${i < stepIndex ? 'done' : ''} ${i === stepIndex ? 'active' : ''}`}
+                  >
                     <div className="Stepper-Dot"><i className={`bx ${s.icon}`}></i></div>
                     <span>{s.label}</span>
                   </div>
@@ -1315,10 +1368,12 @@ function Applications() {
               </div>
             </div>
 
-            {/* ===== ФОТОГРАФИИ (кликабельные, внутри контейнера) ===== */}
+            {/* ===== ФОТОГРАФИИ (кликабельные) ===== */}
             <div className="Application-Photos">
               <div className="Photos-Head">
-                <h3><i className="bx bx-images"></i> Фотографии <em>({(selected.media || []).length})</em></h3>
+                <h3>
+                  <i className="bx bx-images"></i> Фотографии <em>({(selected.media || []).length})</em>
+                </h3>
               </div>
               {selected.media && selected.media.length > 0 ? (
                 <div className="Photos-Grid">
@@ -1357,7 +1412,7 @@ function Applications() {
               <p>{selected.description}</p>
             </div>
 
-            {/* ===== КНОПКИ СТАТУСОВ ВНИЗУ КОНТЕЙНЕРА ===== */}
+            {/* ===== КНОПКИ СТАТУСОВ ===== */}
             <div className="Application-Actions">
               {selected.status === 'Оформлено' && (
                 <button
@@ -1413,12 +1468,21 @@ function Applications() {
       {/* ===== ЛАЙТБОКС — полноэкранный просмотр фото ===== */}
       {lightbox && (
         <div className="Lightbox-Overlay" onClick={() => setLightbox(null)}>
-          <button type="button" className="Lightbox-Close" onClick={() => setLightbox(null)} aria-label="Закрыть просмотр">
+          <button
+            type="button"
+            className="Lightbox-Close"
+            onClick={() => setLightbox(null)}
+            aria-label="Закрыть просмотр"
+          >
             <i className="bx bx-x"></i>
           </button>
           {lightbox.images.length > 1 && (
-            <button type="button" className="Lightbox-Arrow Lightbox-Arrow_Left"
-              onClick={(e) => { e.stopPropagation(); prevImage(); }} aria-label="Предыдущее фото">
+            <button
+              type="button"
+              className="Lightbox-Arrow Lightbox-Arrow_Left"
+              onClick={(e) => { e.stopPropagation(); prevImage(); }}
+              aria-label="Предыдущее фото"
+            >
               <i className="bx bx-chevron-left"></i>
             </button>
           )}
@@ -1429,8 +1493,12 @@ function Applications() {
             onClick={(e) => e.stopPropagation()}
           />
           {lightbox.images.length > 1 && (
-            <button type="button" className="Lightbox-Arrow Lightbox-Arrow_Right"
-              onClick={(e) => { e.stopPropagation(); nextImage(); }} aria-label="Следующее фото">
+            <button
+              type="button"
+              className="Lightbox-Arrow Lightbox-Arrow_Right"
+              onClick={(e) => { e.stopPropagation(); nextImage(); }}
+              aria-label="Следующее фото"
+            >
               <i className="bx bx-chevron-right"></i>
             </button>
           )}
@@ -1452,7 +1520,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/applications" element={<Applications/>}/>
+        <Route path="/applications" element={<Applications />} />
       </Routes>
     </Router>
   );

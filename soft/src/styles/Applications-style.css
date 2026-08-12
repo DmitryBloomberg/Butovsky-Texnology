@@ -1,189 +1,172 @@
 /* ============================================
    🏢 APPLICATIONS — ГЛАВНЫЙ КОНТЕЙНЕР
-   ============================================ */
+============================================ */
 .Applications_Main_Container {
-    display: flex;
-    width: 100%;
-    min-height: 100vh;
-    box-sizing: border-box;
-    background: linear-gradient(135deg, #15132f 0%, #1e1b3a 50%, #2a1f4d 100%);
-    position: relative;
-    overflow: hidden;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: linear-gradient(135deg, #15132f 0%, #1e1b3a 50%, #2a1f4d 100%);
+  position: relative;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Декоративные светящиеся пятна на фоне */
+/* Декоративные светящиеся пятна */
 .Applications_Main_Container::before,
 .Applications_Main_Container::after {
-    content: '';
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(100px);
-    opacity: 0.3;
-    pointer-events: none;
-    z-index: 0;
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .Applications_Main_Container::before {
-    width: 500px;
-    height: 500px;
-    background: #6a5acd;
-    top: -200px;
-    right: -100px;
-    animation: float 12s ease-in-out infinite;
+  width: min(500px, 60vw);
+  height: min(500px, 60vw);
+  background: #6a5acd;
+  top: -200px;
+  right: -100px;
+  animation: float 12s ease-in-out infinite;
 }
 
 .Applications_Main_Container::after {
-    width: 400px;
-    height: 400px;
-    background: #ff6b9d;
-    bottom: -150px;
-    left: -100px;
-    animation: float 15s ease-in-out infinite reverse;
+  width: min(400px, 50vw);
+  height: min(400px, 50vw);
+  background: #ff6b9d;
+  bottom: -150px;
+  left: -100px;
+  animation: float 15s ease-in-out infinite reverse;
 }
 
 @keyframes float {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(40px, -40px) scale(1.1); }
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, -40px) scale(1.1); }
 }
 
 /* ============================================
    📋 БОКОВАЯ ПАНЕЛЬ СО СПИСКОМ ЗАЯВОК
-   ============================================ */
+============================================ */
 .ALL-Applications {
-    width: 20%;
-    min-width: 340px;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background: rgba(15, 13, 35, 0.65);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
-    box-sizing: border-box;
-    position: relative;
-    z-index: 2;
-    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.4);
+  width: 20%;
+  min-width: 320px;
+  max-width: 420px;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: rgba(15, 13, 35, 0.65);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  z-index: 2;
+  box-shadow: 4px 0 30px rgba(0, 0, 0, 0.4);
 }
 
 /* ============================================
    🏛 ШАПКА ПАНЕЛИ
-   ============================================ */
+============================================ */
 .Head-Main {
-    width: 100%;
-    height: 80px;
-    min-height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 0 24px;
-    box-sizing: border-box;
-    background: linear-gradient(180deg, rgba(106, 90, 205, 0.15) 0%, transparent 100%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    position: relative;
+  width: 100%;
+  height: 72px;
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 20px;
+  background: linear-gradient(180deg, rgba(106, 90, 205, 0.15) 0%, transparent 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
 }
 
 .Head-Main::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 24px;
-    right: 24px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(106, 90, 205, 0.5), transparent);
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(106, 90, 205, 0.5), transparent);
 }
 
 .Head-Main i {
-    color: #fff;
-    font-size: 28px;
-    background: linear-gradient(135deg, #6a5acd, #ff6b9d);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-right: 12px;
-    filter: drop-shadow(0 0 8px rgba(106, 90, 205, 0.5));
+  font-size: clamp(22px, 3vw, 28px);
+  background: linear-gradient(135deg, #6a5acd, #ff6b9d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-right: 12px;
+  filter: drop-shadow(0 0 8px rgba(106, 90, 205, 0.5));
 }
 
 .Head-Main h1 {
-    color: #fff;
-    font-weight: 500;
-    font-size: 22px;
-    letter-spacing: 0.5px;
-    margin: 0;
-    background: linear-gradient(135deg, #fff 0%, #c5b8ff 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  color: #fff;
+  font-weight: 500;
+  font-size: clamp(18px, 2.5vw, 22px);
+  letter-spacing: 0.5px;
+  margin: 0;
+  background: linear-gradient(135deg, #fff 0%, #c5b8ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* ============================================
    📑 СПИСОК ЗАЯВОК
-   ============================================ */
+============================================ */
 .Applications-ALL_BTHS {
-    flex: 1;
-    width: 100%;
-    padding: 20px 16px;
-    box-sizing: border-box;
-    overflow-y: auto;
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  flex: 1;
+  width: 100%;
+  padding: 16px 12px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Стилизованный скроллбар */
-.Applications-ALL_BTHS::-webkit-scrollbar {
-    width: 6px;
-}
-.Applications-ALL_BTHS::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 10px;
-}
+.Applications-ALL_BTHS::-webkit-scrollbar { width: 5px; }
+.Applications-ALL_BTHS::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.03); border-radius: 10px; }
 .Applications-ALL_BTHS::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #6a5acd, #ff6b9d);
-    border-radius: 10px;
-}
-.Applications-ALL_BTHS::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #7d6fd8, #ff85b1);
+  background: linear-gradient(180deg, #6a5acd, #ff6b9d);
+  border-radius: 10px;
 }
 
 /* ============================================
    🔘 КНОПКА-КАРТОЧКА ЗАЯВКИ
-   ============================================ */
+============================================ */
 .Applications-ALL_BTHS button {
-    position: relative;
-    width: 100%;
-    min-height: 72px;
-    padding: 14px 18px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    
-    color: #e8e6ff;
-    font-family: inherit;
-    font-weight: 500;
-    font-size: 15px;
-    letter-spacing: 0.3px;
-    text-align: left;
-
-    /* --- Стекло --- */
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
-    backdrop-filter: blur(14px) saturate(160%);
-    -webkit-backdrop-filter: blur(14px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 14px;
-    
-    box-shadow:
-        0 4px 20px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: hidden;
-    
-    /* Анимация появления (каждый следующий элемент с задержкой) */
-    animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+  position: relative;
+  width: 100%;
+  min-height: 64px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #e8e6ff;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+  text-align: left;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+  touch-action: manipulation;
 }
 
 .Applications-ALL_BTHS button:nth-child(1) { animation-delay: 0.05s; }
@@ -198,174 +181,116 @@
 .Applications-ALL_BTHS button:nth-child(10) { animation-delay: 0.5s; }
 
 @keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
-/* Декоративная градиентная подсветка при наведении */
 .Applications-ALL_BTHS button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(106, 90, 205, 0.15),
-        transparent
-    );
-    transition: left 0.6s ease;
-    pointer-events: none;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(106, 90, 205, 0.15), transparent);
+  transition: left 0.6s ease;
+  pointer-events: none;
 }
 
-.Applications-ALL_BTHS button:hover::before {
-    left: 100%;
-}
+.Applications-ALL_BTHS button:hover::before { left: 100%; }
 
 .Applications-ALL_BTHS button:hover {
-    background: linear-gradient(135deg, rgba(106, 90, 205, 0.18) 0%, rgba(255, 107, 157, 0.08) 100%);
-    border-color: rgba(106, 90, 205, 0.5);
-    box-shadow:
-        0 8px 30px rgba(106, 90, 205, 0.25),
-        0 0 20px rgba(106, 90, 205, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.25);
-    transform: translateX(4px);
-    color: #fff;
+  background: linear-gradient(135deg, rgba(106, 90, 205, 0.18) 0%, rgba(255, 107, 157, 0.08) 100%);
+  border-color: rgba(106, 90, 205, 0.5);
+  box-shadow:
+    0 8px 30px rgba(106, 90, 205, 0.25),
+    0 0 20px rgba(106, 90, 205, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transform: translateX(4px);
+  color: #fff;
 }
 
 .Applications-ALL_BTHS button:active {
-    transform: translateX(4px) scale(0.98);
-    transition: all 0.1s ease;
+  transform: translateX(4px) scale(0.98);
+  transition: all 0.1s ease;
 }
 
-/* 🔴 Активное состояние — выбранная заявка */
 .Applications-ALL_BTHS button.active,
 .Applications-ALL_BTHS button:focus-visible {
-    background: linear-gradient(135deg, rgba(106, 90, 205, 0.3) 0%, rgba(255, 107, 157, 0.15) 100%);
-    border-color: #6a5acd;
-    box-shadow:
-        0 8px 30px rgba(106, 90, 205, 0.4),
-        0 0 25px rgba(106, 90, 205, 0.25),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    color: #fff;
+  background: linear-gradient(135deg, rgba(106, 90, 205, 0.3) 0%, rgba(255, 107, 157, 0.15) 100%);
+  border-color: #6a5acd;
+  box-shadow:
+    0 8px 30px rgba(106, 90, 205, 0.4),
+    0 0 25px rgba(106, 90, 205, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  color: #fff;
 }
 
-/* Боковая градиентная полоска у активной заявки */
 .Applications-ALL_BTHS button.active::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 15%;
-    bottom: 15%;
-    width: 3px;
-    background: linear-gradient(180deg, #6a5acd, #ff6b9d);
-    border-radius: 0 3px 3px 0;
-    box-shadow: 0 0 10px rgba(106, 90, 205, 0.8);
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 15%;
+  bottom: 15%;
+  width: 3px;
+  background: linear-gradient(180deg, #6a5acd, #ff6b9d);
+  border-radius: 0 3px 3px 0;
+  box-shadow: 0 0 10px rgba(106, 90, 205, 0.8);
 }
 
-/* ============================================
-   🎯 ИКОНКА ХЭШТЕГА ВНУТРИ КНОПКИ
-   ============================================ */
+/* Иконка хэштега */
 .Applications-ALL_BTHS button .bx-hash {
-    font-size: 18px;
-    color: #6a5acd;
-    background: rgba(106, 90, 205, 0.15);
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    border: 1px solid rgba(106, 90, 205, 0.3);
-    transition: all 0.3s ease;
+  font-size: 16px;
+  color: #6a5acd;
+  background: rgba(106, 90, 205, 0.15);
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid rgba(106, 90, 205, 0.3);
+  transition: all 0.3s ease;
 }
 
 .Applications-ALL_BTHS button:hover .bx-hash,
 .Applications-ALL_BTHS button.active .bx-hash {
-    background: linear-gradient(135deg, #6a5acd, #ff6b9d);
-    color: #fff;
-    border-color: transparent;
-    transform: rotate(8deg) scale(1.05);
-    box-shadow: 0 4px 12px rgba(106, 90, 205, 0.4);
+  background: linear-gradient(135deg, #6a5acd, #ff6b9d);
+  color: #fff;
+  border-color: transparent;
+  transform: rotate(8deg) scale(1.05);
+  box-shadow: 0 4px 12px rgba(106, 90, 205, 0.4);
 }
 
-
-
-/* ============================================
-   📱 АДАПТИВНОСТЬ
-   ============================================ */
-@media (max-width: 768px) {
-    .ALL-Applications {
-        width: 100%;
-        min-width: 100%;
-        height: auto;
-        min-height: 100vh;
-    }
-    
-    .Applications_Main_Container {
-        flex-direction: column;
-    }
-    
-    .Head-Main {
-        justify-content: center;
-    }
-}
-
-@media (max-width: 480px) {
-    .Applications-ALL_BTHS button {
-        min-height: 64px;
-        font-size: 14px;
-    }
-    
-    .Head-Main h1 {
-        font-size: 18px;
-    }
-}
-
-.Application-Head {
-    width: 100%;
-    height: 10%;
-}
-.Application-Head h1 {
-    color: white;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    font-weight: 500;
-    font-size: 20px;
-}
-.Application-Head i {
-    color: white;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    font-weight: 500;
-    font-size: 20px;
+/* Точка статуса */
+.Applications-ALL_BTHS button .req-dot {
+  margin-left: auto;
+  width: 9px;
+  height: 9px;
+  min-width: 9px;
+  border-radius: 50%;
+  box-shadow: 0 0 10px currentColor;
 }
 
 /* ============================================
    📄 ПРАВАЯ ПАНЕЛЬ — КАРТОЧКА ЗАЯВКИ
 ============================================ */
 .Application-ALL-Right_container {
-  width: 80%;
+  flex: 1;
   height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* было center — из-за этого срезался верх */
-  align-items: center;         /* карточка по центру горизонтали */
-  padding: 40px 32px;
-  box-sizing: border-box;
-  overflow-y: auto;            /* скроллится панель, а не карточка */
+  justify-content: flex-start;
+  align-items: center;
+  padding: 32px 28px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   position: relative;
   z-index: 2;
 }
 
-/* Скроллбар правой панели */
 .Application-ALL-Right_container::-webkit-scrollbar { width: 6px; }
 .Application-ALL-Right_container::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
 .Application-ALL-Right_container::-webkit-scrollbar-thumb {
@@ -373,17 +298,17 @@
   border-radius: 10px;
 }
 
-
 /* ============================================
    🏷 ШАПКА КАРТОЧКИ + СТАТУС-БЕЙДЖ
 ============================================ */
 .Application-Head {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
-  padding-bottom: 18px;
+  padding-bottom: 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
@@ -392,7 +317,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 22px;
+  font-size: clamp(18px, 3vw, 22px);
   font-weight: 500;
   letter-spacing: 0.4px;
   background: linear-gradient(135deg, #fff 0%, #c5b8ff 100%);
@@ -405,8 +330,12 @@
   font-size: 16px;
   color: #6a5acd;
   background: rgba(106, 90, 205, 0.15);
-  width: 38px; height: 38px; min-width: 38px;
-  display: flex; align-items: center; justify-content: center;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 11px;
   border: 1px solid rgba(106, 90, 205, 0.3);
   -webkit-text-fill-color: #8f7fe0;
@@ -417,7 +346,7 @@
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  padding: 9px 18px;
+  padding: 8px 16px;
   border-radius: 999px;
   font-size: 13px;
   font-weight: 600;
@@ -426,32 +355,37 @@
   animation: badgePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   transition: all 0.4s ease;
 }
+
 .Status-Dot {
-  width: 8px; height: 8px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: currentColor;
   animation: pulseDot 1.6s ease-in-out infinite;
 }
+
 @keyframes badgePop {
   from { opacity: 0; transform: scale(0.7); }
   to   { opacity: 1; transform: scale(1); }
 }
+
 @keyframes pulseDot {
-  0%, 100% { opacity: 1;   transform: scale(1); }
+  0%, 100% { opacity: 1; transform: scale(1); }
   50%      { opacity: 0.4; transform: scale(0.7); }
 }
 
-/* Три состояния статуса */
 .status-created {
   color: #6ab7ff;
   background: rgba(106, 183, 255, 0.12);
   border-color: rgba(106, 183, 255, 0.35);
 }
+
 .status-in_progress {
   color: #ffb84d;
   background: rgba(255, 184, 77, 0.12);
   border-color: rgba(255, 184, 77, 0.35);
 }
+
 .status-completed {
   color: #5ee08a;
   background: rgba(94, 224, 138, 0.12);
@@ -459,27 +393,31 @@
 }
 
 /* ============================================
-   👣 СТЕППЕР ЭТАПОВ ВЫПОЛНЕНИЯ
+   👣 СТЕППЕР ЭТАПОВ
 ============================================ */
 .Status-Stepper {
   display: flex;
   align-items: flex-start;
-  padding: 26px 10px 8px;
+  padding: 24px 8px 8px;
+  width: 100%;
 }
 
 .Stepper-Step {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 9px;
-  min-width: 96px;
+  gap: 8px;
+  min-width: 80px;
 }
 
 .Stepper-Dot {
-  width: 46px; height: 46px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 19px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #8a86b8;
@@ -487,22 +425,22 @@
 }
 
 .Stepper-Step span {
-  font-size: 12.5px;
+  font-size: 12px;
   color: #8a86b8;
   letter-spacing: 0.3px;
   transition: color 0.3s ease;
+  text-align: center;
 }
 
-/* Пройденный этап */
 .Stepper-Step.done .Stepper-Dot {
   background: linear-gradient(135deg, #6a5acd, #8f7fe0);
   color: #fff;
   border-color: transparent;
   box-shadow: 0 0 20px rgba(106, 90, 205, 0.5);
 }
+
 .Stepper-Step.done span { color: #c5b8ff; }
 
-/* Текущий этап */
 .Stepper-Step.active .Stepper-Dot {
   border-color: #6a5acd;
   color: #c5b8ff;
@@ -510,17 +448,18 @@
     0 0 0 5px rgba(106, 90, 205, 0.15),
     0 0 22px rgba(106, 90, 205, 0.4);
 }
+
 .Stepper-Step.active span { color: #fff; font-weight: 600; }
 
-/* Линия между этапами */
 .Stepper-Line {
   flex: 1;
   height: 2px;
-  margin-top: 22px;
+  margin-top: 21px;
   background: rgba(255, 255, 255, 0.1);
   position: relative;
   overflow: hidden;
 }
+
 .Stepper-Line::after {
   content: '';
   position: absolute;
@@ -530,6 +469,7 @@
   transform-origin: left;
   transition: transform 0.6s ease;
 }
+
 .Stepper-Line.filled::after { transform: scaleX(1); }
 
 /* ============================================
@@ -538,34 +478,42 @@
 .Application-Rows {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin: 18px 0 24px;
+  gap: 10px;
+  margin: 16px 0 20px;
+  width: 100%;
 }
 
 .Application-Row {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 13px 16px;
+  padding: 12px 16px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 13px;
   transition: all 0.3s ease;
 }
+
 .Application-Row:hover {
   background: rgba(106, 90, 205, 0.09);
   border-color: rgba(106, 90, 205, 0.35);
   transform: translateX(4px);
 }
+
 .Application-Row > i {
-  width: 36px; height: 36px; min-width: 36px;
-  display: flex; align-items: center; justify-content: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: rgba(106, 90, 205, 0.15);
   border: 1px solid rgba(106, 90, 205, 0.25);
   border-radius: 10px;
   color: #a99cf5;
   font-size: 16px;
 }
+
 .Row-Label {
   font-size: 11px;
   color: #8a86b8;
@@ -573,21 +521,29 @@
   letter-spacing: 0.8px;
   margin-bottom: 3px;
 }
+
 .Row-Value {
   color: #fff;
-  font-size: 14.5px;
+  font-size: 14px;
   font-weight: 500;
+  word-break: break-word;
 }
 
 /* ============================================
-   🖼 ГАЛЕРЕЯ ФОТО (заготовка под загрузку)
+   🖼 ГАЛЕРЕЯ ФОТО
 ============================================ */
+.Application-Photos {
+  width: 100%;
+  margin-top: 4px;
+}
+
 .Photos-Head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 14px;
 }
+
 .Photos-Head h3 {
   margin: 0;
   display: flex;
@@ -597,7 +553,9 @@
   font-size: 16px;
   font-weight: 500;
 }
+
 .Photos-Head h3 i { color: #a99cf5; font-size: 19px; }
+
 .Photos-Head em {
   font-style: normal;
   color: #8a86b8;
@@ -606,11 +564,10 @@
 
 .Photos-Grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 12px;
 }
 
-/* Загруженное фото */
 .Photo-Item {
   position: relative;
   aspect-ratio: 1;
@@ -619,70 +576,59 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
   animation: badgePop 0.35s ease backwards;
+  cursor: zoom-in;
 }
-.Photo-Item img {
-  width: 100%; height: 100%;
+
+.Photo-Item img,
+.Photo-Item video {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   display: block;
   transition: transform 0.45s ease;
 }
+
+.Photo-Item video {
+  background: #000;
+  cursor: default;
+}
+
 .Photo-Item:hover img { transform: scale(1.07); }
 
-/* Кнопка удаления фото */
-.Photo-Remove {
+.Photo-ZoomHint {
   position: absolute;
-  top: 6px; right: 6px;
-  width: 27px; height: 27px;
-  display: flex; align-items: center; justify-content: center;
+  top: 6px;
+  right: 6px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(6px);
   color: #fff;
   font-size: 15px;
-  cursor: pointer;
   opacity: 0;
-  transition: all 0.25s ease;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
 }
-.Photo-Item:hover .Photo-Remove { opacity: 1; }
-.Photo-Remove:hover { background: rgba(255, 80, 80, 0.85); }
 
-/* Плитка «Добавить фото» */
-.Photo-Add {
-  aspect-ratio: 1;
-  border-radius: 14px;
-  border: 1.5px dashed rgba(106, 90, 205, 0.55);
-  background: rgba(106, 90, 205, 0.07);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  color: #a99cf5;
-  font-size: 12.5px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-.Photo-Add i { font-size: 24px; }
-.Photo-Add:hover {
-  border-color: #ff6b9d;
-  color: #ff9dbd;
-  background: rgba(255, 107, 157, 0.08);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 22px rgba(106, 90, 205, 0.2);
-}
+.Photo-Item:hover .Photo-ZoomHint { opacity: 1; }
 
 /* ============================================
    💬 ОПИСАНИЕ ПРОБЛЕМЫ
 ============================================ */
 .Application-Description {
-  margin-top: 24px;
+  margin-top: 20px;
   padding: 16px 18px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-left: 3px solid #6a5acd;
   border-radius: 13px;
+  width: 100%;
 }
+
 .Desc-Label {
   display: flex;
   align-items: center;
@@ -693,31 +639,34 @@
   letter-spacing: 0.8px;
   margin-bottom: 8px;
 }
+
 .Application-Description p {
   margin: 0;
   color: #d6d2f5;
-  font-size: 14.5px;
+  font-size: 14px;
   line-height: 1.65;
+  word-break: break-word;
 }
 
 /* ============================================
-   🎬 КНОПКИ ДЕЙСТВИЙ (поэтапно)
+   🎬 КНОПКИ ДЕЙСТВИЙ
 ============================================ */
 .Application-Actions {
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
-  margin-top: 26px;
+  margin-top: 24px;
+  width: 100%;
 }
 
 .Action-Btn {
   flex: 1;
-  min-width: 220px;
+  min-width: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 15px 22px;
+  padding: 14px 20px;
   border: none;
   border-radius: 14px;
   color: #fff;
@@ -730,49 +679,73 @@
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   animation: badgePop 0.4s ease backwards;
+  touch-action: manipulation;
 }
+
 .Action-Btn i { font-size: 18px; }
 
-/* Блик при наведении */
 .Action-Btn::before {
   content: '';
   position: absolute;
-  top: 0; left: -100%;
-  width: 60%; height: 100%;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
   transition: left 0.6s ease;
 }
+
 .Action-Btn:hover::before { left: 130%; }
 
-/* «Принять в работу» */
 .Action-Btn_Work {
   background: linear-gradient(135deg, #6a5acd, #8f7fe0);
   box-shadow: 0 8px 26px rgba(106, 90, 205, 0.4);
 }
+
 .Action-Btn_Work:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 34px rgba(106, 90, 205, 0.55);
 }
 
-/* «Утвердить исполнение» */
 .Action-Btn_Done {
   background: linear-gradient(135deg, #2eb872, #5ee08a);
   box-shadow: 0 8px 26px rgba(46, 184, 114, 0.4);
 }
+
 .Action-Btn_Done:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 34px rgba(46, 184, 114, 0.55);
 }
+
+.Action-Btn_Back {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cfd6ff;
+  box-shadow: none;
+}
+
+.Action-Btn_Back:hover {
+  background: rgba(255, 184, 77, 0.12);
+  border-color: rgba(255, 184, 77, 0.4);
+  color: #ffb84d;
+  transform: translateY(-2px);
+}
+
 .Action-Btn:active { transform: translateY(0) scale(0.98); }
 
-/* Плашка «Заявка закрыта» */
+.Action-Btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .Completed-Note {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 15px 22px;
+  padding: 14px 20px;
   border-radius: 14px;
   background: rgba(94, 224, 138, 0.1);
   border: 1px solid rgba(94, 224, 138, 0.35);
@@ -781,31 +754,39 @@
   letter-spacing: 0.3px;
   animation: badgePop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+
 .Completed-Note i { font-size: 20px; }
 
 /* ============================================
-   📱 АДАПТИВНОСТЬ ПРАВОЙ ПАНЕЛИ
+   ПУСТОЕ СОСТОЯНИЕ
 ============================================ */
-@media (max-width: 1100px) {
-  .Application-Container-Information { padding: 24px; }
+.Application-Empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 70px 30px;
+  text-align: center;
 }
 
-@media (max-width: 768px) {
-  .Application-ALL-Right_container {
-    width: 100%;
-    padding: 24px 16px;
-  }
-  .Application-Head { flex-direction: column; align-items: flex-start; }
-  .Stepper-Step { min-width: 70px; }
-  .Stepper-Step span { font-size: 11px; }
-  .Action-Btn { min-width: 100%; }
+.Application-Empty i { font-size: 52px; color: #6774c9; }
+.Application-Empty h1 { margin: 0; font-size: 18px; color: #8a86b8; font-weight: 500; }
+
+/* Контейнер информации */
+.Application-Container-Information {
+  width: 100%;
+  max-width: 800px;
+  height: auto !important;
+  max-height: none;
 }
 
-
-/* ===== ЗАГРУЗКА МЕДИА В МОДАЛКЕ ЗАЯВКИ ===== */
+/* ============================================
+   ЗАГРУЗКА МЕДИА В МОДАЛКЕ
+============================================ */
 .Modal-MediaUpload {
   color: white;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
   font-weight: 500;
   display: flex;
   flex-direction: column;
@@ -814,13 +795,12 @@
 }
 
 .Media-PreviewGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    gap: 10px;
-    width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 10px;
+  width: 100%;
 }
 
-/* Элемент превью (фото/видео) */
 .Media-Item {
   position: relative;
   aspect-ratio: 1;
@@ -828,7 +808,6 @@
   overflow: hidden;
   border: 1px solid rgba(122, 140, 255, 0.2);
   background: rgba(9, 11, 38, 0.6);
-
 }
 
 .Media-Item img,
@@ -839,13 +818,12 @@
   display: block;
 }
 
-/* Кнопка удаления медиа */
 .Media-Remove {
   position: absolute;
   top: 4px;
   right: 4px;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(4px);
@@ -858,17 +836,12 @@
   justify-content: center;
   opacity: 0;
   transition: opacity 0.2s ease;
+  touch-action: manipulation;
 }
 
-.Media-Item:hover .Media-Remove {
-  opacity: 1;
-}
+.Media-Item:hover .Media-Remove { opacity: 1; }
+.Media-Remove:hover { background: #ff4d4d; }
 
-.Media-Remove:hover {
-  background: #ff4d4d;
-}
-
-/* Кнопка добавления (плитка с плюсом) */
 .Media-AddBtn {
   aspect-ratio: 1;
   border-radius: 12px;
@@ -884,11 +857,10 @@
   transition: all 0.25s ease;
   font-size: 12px;
   text-align: center;
+  touch-action: manipulation;
 }
 
-.Media-AddBtn i {
-  font-size: 24px;
-}
+.Media-AddBtn i { font-size: 24px; }
 
 .Media-AddBtn:hover {
   border-color: #6d8bff;
@@ -896,7 +868,6 @@
   transform: translateY(-2px);
 }
 
-/* Состояние, когда лимит исчерпан */
 .Media-AddBtn.disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -912,18 +883,15 @@
   margin-top: -4px;
 }
 
-
-/* ================================================== */
-/* ===== МОИ ЗАЯВКИ — СПИСОК В МОДАЛКЕ ============= */
-/* ================================================== */
-
-/* Расширенная модалка для списка заявок */
+/* ============================================
+   МОИ ЗАЯВКИ — СПИСОК В МОДАЛКЕ
+============================================ */
 .Modal-Wide {
   max-width: 680px;
   max-height: 85vh;
+  max-height: calc(100dvh - 32px);
 }
 
-/* Состояния: загрузка / ошибка / пусто */
 .UserApps-State {
   display: flex;
   flex-direction: column;
@@ -932,27 +900,23 @@
   padding: 50px 20px;
   color: #9aa5d9;
   font-size: 15px;
-}
-.UserApps-State i {
-  font-size: 48px;
-  color: #6774c9;
-}
-.UserApps-Error i {
-  color: #ff6b6b;
-}
-.UserApps-Error span {
-  color: #ff8a8a;
+  text-align: center;
 }
 
-/* Список заявок */
+.UserApps-State i { font-size: 48px; color: #6774c9; }
+.UserApps-Error i { color: #ff6b6b; }
+.UserApps-Error span { color: #ff8a8a; }
+
 .UserApps-List {
   display: flex;
   flex-direction: column;
   gap: 14px;
   max-height: 55vh;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding-right: 4px;
 }
+
 .UserApps-List::-webkit-scrollbar { width: 6px; }
 .UserApps-List::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 10px; }
 .UserApps-List::-webkit-scrollbar-thumb {
@@ -960,7 +924,6 @@
   border-radius: 10px;
 }
 
-/* Карточка заявки */
 .UserApps-Card {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(122, 140, 255, 0.15);
@@ -968,16 +931,17 @@
   overflow: hidden;
   transition: all 0.3s ease;
 }
+
 .UserApps-Card:hover {
   border-color: rgba(122, 140, 255, 0.35);
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
 }
+
 .UserApps-Card.expanded {
   border-color: rgba(122, 140, 255, 0.4);
   background: rgba(255, 255, 255, 0.04);
 }
 
-/* Шапка карточки */
 .UserApps-CardHead {
   display: flex;
   align-items: center;
@@ -986,25 +950,30 @@
   cursor: pointer;
   user-select: none;
   transition: background 0.2s ease;
+  gap: 10px;
 }
-.UserApps-CardHead:hover {
-  background: rgba(122, 140, 255, 0.06);
-}
+
+.UserApps-CardHead:hover { background: rgba(122, 140, 255, 0.06); }
+
 .UserApps-CardHead-Left {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
+
 .UserApps-CardHead-Right {
   display: flex;
   align-items: center;
   gap: 12px;
 }
+
 .UserApps-Id {
   color: #fff;
   font-weight: 700;
   font-size: 15px;
 }
+
 .UserApps-Category {
   color: #9aa5d9;
   font-size: 13px;
@@ -1012,13 +981,13 @@
   padding: 4px 10px;
   border-radius: 8px;
 }
+
 .UserApps-Arrow {
   color: #6774c9;
   font-size: 20px;
   transition: transform 0.3s ease;
 }
 
-/* Статус-бейдж */
 .UserApps-Status {
   display: inline-flex;
   align-items: center;
@@ -1029,6 +998,7 @@
   font-weight: 600;
   border: 1px solid;
 }
+
 .UserApps-StatusDot {
   width: 7px;
   height: 7px;
@@ -1036,12 +1006,13 @@
   animation: pulseDot 1.6s ease-in-out infinite;
 }
 
-/* Тело карточки (краткая инфа) */
 .UserApps-CardBody {
   display: flex;
   gap: 20px;
   padding: 0 18px 14px;
+  flex-wrap: wrap;
 }
+
 .UserApps-InfoRow {
   display: flex;
   align-items: center;
@@ -1049,26 +1020,21 @@
   color: #aab6f0;
   font-size: 13px;
 }
-.UserApps-InfoRow i {
-  font-size: 16px;
-  color: #6774c9;
-}
-.UserApps-InfoRow strong {
-  color: #fff;
-}
 
-/* Раскрывающаяся часть */
+.UserApps-InfoRow i { font-size: 16px; color: #6774c9; }
+.UserApps-InfoRow strong { color: #fff; }
+
 .UserApps-Expanded {
   padding: 0 18px 18px;
   border-top: 1px solid rgba(122, 140, 255, 0.1);
   animation: expandIn 0.3s ease;
 }
+
 @keyframes expandIn {
   from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Описание */
 .UserApps-Desc {
   margin-top: 14px;
   padding: 14px 16px;
@@ -1076,6 +1042,7 @@
   border-left: 3px solid #3550e0;
   border-radius: 10px;
 }
+
 .UserApps-DescLabel {
   display: flex;
   align-items: center;
@@ -1086,17 +1053,17 @@
   letter-spacing: 0.8px;
   margin-bottom: 8px;
 }
+
 .UserApps-Desc p {
   margin: 0;
   color: #d6d2f5;
   font-size: 14px;
   line-height: 1.6;
+  word-break: break-word;
 }
 
-/* Медиа */
-.UserApps-Media {
-  margin-top: 16px;
-}
+.UserApps-Media { margin-top: 16px; }
+
 .UserApps-MediaLabel {
   display: flex;
   align-items: center;
@@ -1107,18 +1074,22 @@
   letter-spacing: 0.8px;
   margin-bottom: 12px;
 }
+
 .UserApps-MediaGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
   gap: 10px;
 }
+
 .UserApps-MediaItem {
   aspect-ratio: 1;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid rgba(122, 140, 255, 0.2);
   background: rgba(9, 11, 38, 0.6);
+  position: relative;
 }
+
 .UserApps-MediaItem img,
 .UserApps-MediaItem video {
   width: 100%;
@@ -1127,153 +1098,8 @@
   display: block;
 }
 
-/* Нет медиа */
-.UserApps-NoMedia {
-  margin-top: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #5d68a8;
-  font-size: 13px;
-  padding: 12px;
-  background: rgba(255,255,255,0.02);
-  border-radius: 10px;
-}
-.UserApps-NoMedia i {
-  font-size: 20px;
-}
+.UserApps-MediaItem img { cursor: zoom-in; }
 
-/* Адаптив */
-@media (max-width: 576px) {
-  .Modal-Wide {
-    max-width: 100%;
-    padding: 24px 16px;
-  }
-  .UserApps-CardHead {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-  .UserApps-CardHead-Right {
-    width: 100%;
-    justify-content: space-between;
-  }
-  .UserApps-MediaGrid {
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  }
-}
-
-/* ================================================== */
-/* ===== ЛАЙТБОКС — ПОЛНОЭКРАННЫЙ ПРОСМОТР ФОТО ===== */
-/* ================================================== */
-
-.Lightbox-Overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 2000; /* выше модалки (1000) */
-  background: rgba(3, 4, 15, 0.93);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: modalFadeIn 0.2s ease-out;
-  cursor: zoom-out; /* клик по фону = закрыть */
-}
-
-/* Фото по центру, вписано в экран */
-.Lightbox-Image {
-  max-width: 92vw;
-  max-height: 88vh;
-  object-fit: contain;
-  border-radius: 12px;
-  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.85);
-  animation: lightboxZoom 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  cursor: default; /* клик по фото не закрывает */
-  user-select: none;
-}
-@keyframes lightboxZoom {
-  from { opacity: 0; transform: scale(0.86); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
-/* Крестик закрытия */
-.Lightbox-Close {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 50%;
-  color: #fff;
-  font-size: 30px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  z-index: 3;
-}
-.Lightbox-Close:hover {
-  background: rgba(255, 90, 90, 0.25);
-  border-color: rgba(255, 90, 90, 0.5);
-  color: #ff8a8a;
-  transform: rotate(90deg);
-}
-
-/* Стрелки навигации */
-.Lightbox-Arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 54px;
-  height: 54px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 50%;
-  color: #fff;
-  font-size: 34px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  z-index: 3;
-}
-.Lightbox-Arrow:hover {
-  background: rgba(106, 90, 205, 0.4);
-  border-color: #6a5acd;
-  transform: translateY(-50%) scale(1.08);
-}
-.Lightbox-Arrow_Left  { left: 24px; }
-.Lightbox-Arrow_Right { right: 24px; }
-
-/* Счётчик «2 / 5» снизу */
-.Lightbox-Counter {
-  position: absolute;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 8px 18px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  color: #dfe3ff;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  backdrop-filter: blur(8px);
-}
-
-/* ===== Подсказка «увеличить» на миниатюре ===== */
-.UserApps-MediaItem {
-  position: relative;
-}
-.UserApps-MediaItem img {
-  cursor: zoom-in;
-}
 .UserApps-ZoomHint {
   position: absolute;
   top: 6px;
@@ -1292,72 +1118,135 @@
   transition: opacity 0.25s ease;
   pointer-events: none;
 }
-.UserApps-MediaItem:hover .UserApps-ZoomHint {
-  opacity: 1;
-}
 
-/* ===== Адаптив лайтбокса ===== */
-@media (max-width: 576px) {
-  .Lightbox-Image {
-    max-width: 96vw;
-    max-height: 80vh;
-    border-radius: 8px;
-  }
-  .Lightbox-Arrow {
-    width: 42px;
-    height: 42px;
-    font-size: 26px;
-  }
-  .Lightbox-Arrow_Left  { left: 10px; }
-  .Lightbox-Arrow_Right { right: 10px; }
-  .Lightbox-Close {
-    top: 12px;
-    right: 12px;
-    width: 40px;
-    height: 40px;
-    font-size: 26px;
-  }
-}
+.UserApps-MediaItem:hover .UserApps-ZoomHint { opacity: 1; }
 
-/* ===== Точка-статус в списке заявок (левая панель) ===== */
-.Applications-ALL_BTHS button .req-dot {
-  margin-left: auto;
-  width: 9px;
-  height: 9px;
-  min-width: 9px;
-  border-radius: 50%;
-  box-shadow: 0 0 10px currentColor;
-}
-/* ===== Видео в сетке фото админ-карточки ===== */
-.Photo-Item video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  background: #000;
-}
-/* ===== Пустое состояние правой панели ===== */
-.Application-Empty {
+.UserApps-NoMedia {
+  margin-top: 14px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 14px;
-  padding: 70px 30px;
-  text-align: center;
+  gap: 8px;
+  color: #5d68a8;
+  font-size: 13px;
+  padding: 12px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 10px;
 }
-.Application-Empty i { font-size: 52px; color: #6774c9; }
-.Application-Empty h1 { margin: 0; font-size: 18px; color: #8a86b8; font-weight: 500; }
 
+.UserApps-NoMedia i { font-size: 20px; }
 
 /* ============================================
-📋 КАРТОЧКА ЗАЯВКИ В БОКОВОЙ ПАНЕЛИ (с фото и кнопками)
+   ЛАЙТБОКС
+============================================ */
+.Lightbox-Overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(3, 4, 15, 0.93);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: modalFadeIn 0.2s ease-out;
+  cursor: zoom-out;
+}
+
+.Lightbox-Image {
+  max-width: 92vw;
+  max-height: 88vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.85);
+  animation: lightboxZoom 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: default;
+  user-select: none;
+}
+
+@keyframes lightboxZoom {
+  from { opacity: 0; transform: scale(0.86); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.Lightbox-Close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 30px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  z-index: 3;
+  touch-action: manipulation;
+}
+
+.Lightbox-Close:hover {
+  background: rgba(255, 90, 90, 0.25);
+  border-color: rgba(255, 90, 90, 0.5);
+  color: #ff8a8a;
+  transform: rotate(90deg);
+}
+
+.Lightbox-Arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 34px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  z-index: 3;
+  touch-action: manipulation;
+}
+
+.Lightbox-Arrow:hover {
+  background: rgba(106, 90, 205, 0.4);
+  border-color: #6a5acd;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.Lightbox-Arrow_Left  { left: 24px; }
+.Lightbox-Arrow_Right { right: 24px; }
+
+.Lightbox-Counter {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 18px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  color: #dfe3ff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  backdrop-filter: blur(8px);
+}
+
+/* ============================================
+   САЙДБАР КАРТОЧКИ (расширенный)
 ============================================ */
 .App-Sidebar-Card {
   position: relative;
   width: 100%;
   padding: 14px 16px;
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -1377,43 +1266,17 @@
 .App-Sidebar-Card:hover {
   background: linear-gradient(135deg, rgba(106, 90, 205, 0.18) 0%, rgba(255, 107, 157, 0.08) 100%);
   border-color: rgba(106, 90, 205, 0.5);
-  box-shadow:
-    0 8px 30px rgba(106, 90, 205, 0.25),
-    0 0 20px rgba(106, 90, 205, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
   transform: translateX(4px);
 }
 
 .App-Sidebar-Card.active {
   background: linear-gradient(135deg, rgba(106, 90, 205, 0.3) 0%, rgba(255, 107, 157, 0.15) 100%);
   border-color: #6a5acd;
-  box-shadow:
-    0 8px 30px rgba(106, 90, 205, 0.4),
-    0 0 25px rgba(106, 90, 205, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-.App-Sidebar-Card.active::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 15%;
-  bottom: 15%;
-  width: 3px;
-  background: linear-gradient(180deg, #6a5acd, #ff6b9d);
-  border-radius: 0 3px 3px 0;
-  box-shadow: 0 0 10px rgba(106, 90, 205, 0.8);
-}
+.App-Sidebar-Card_Completed { opacity: 0.6; }
+.App-Sidebar-Card_Completed:hover { opacity: 0.85; }
 
-/* Выполненная заявка — приглушённый стиль */
-.App-Sidebar-Card_Completed {
-  opacity: 0.6;
-}
-.App-Sidebar-Card_Completed:hover {
-  opacity: 0.85;
-}
-
-/* Верхняя строка карточки */
 .App-Sidebar-Card_Top {
   display: flex;
   align-items: center;
@@ -1440,12 +1303,6 @@
   border: 1px solid rgba(106, 90, 205, 0.3);
 }
 
-.App-Sidebar-Card.active .App-Sidebar-Card_Info .bx-hash {
-  background: linear-gradient(135deg, #6a5acd, #ff6b9d);
-  color: #fff;
-  border-color: transparent;
-}
-
 .App-Sidebar-Card_Id {
   color: #fff;
   font-weight: 700;
@@ -1460,7 +1317,6 @@
   border-radius: 6px;
 }
 
-/* Точка статуса */
 .App-Sidebar-Status {
   width: 10px;
   height: 10px;
@@ -1469,10 +1325,10 @@
   box-shadow: 0 0 10px currentColor;
 }
 
-/* ===== МИНИАТЮРЫ ФОТО В САЙДБАРЕ ===== */
 .App-Sidebar-Thumbs {
   display: flex;
   gap: 6px;
+  flex-wrap: wrap;
 }
 
 .App-Sidebar-Thumb {
@@ -1505,7 +1361,6 @@
   font-weight: 600;
 }
 
-/* ===== КНОПКИ СТАТУСОВ В САЙДБАРЕ ===== */
 .App-Sidebar-Actions {
   display: flex;
   gap: 8px;
@@ -1528,18 +1383,12 @@
   transition: all 0.25s ease;
   position: relative;
   overflow: hidden;
+  touch-action: manipulation;
 }
 
-.Sidebar-Btn i {
-  font-size: 14px;
-}
+.Sidebar-Btn i { font-size: 14px; }
+.Sidebar-Btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.Sidebar-Btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Кнопка "В работу" */
 .Sidebar-Btn_Work {
   background: linear-gradient(135deg, #6a5acd, #8f7fe0);
   box-shadow: 0 4px 12px rgba(106, 90, 205, 0.3);
@@ -1550,7 +1399,6 @@
   box-shadow: 0 6px 18px rgba(106, 90, 205, 0.5);
 }
 
-/* Кнопка "Выполнена" */
 .Sidebar-Btn_Done {
   background: linear-gradient(135deg, #2eb872, #5ee08a);
   box-shadow: 0 4px 12px rgba(46, 184, 114, 0.3);
@@ -1561,11 +1409,8 @@
   box-shadow: 0 6px 18px rgba(46, 184, 114, 0.5);
 }
 
-.Sidebar-Btn:active {
-  transform: translateY(0) scale(0.97);
-}
+.Sidebar-Btn:active { transform: translateY(0) scale(0.97); }
 
-/* ===== ЗАГОЛОВОК СЕКЦИИ "ВЫПОЛНЕННЫЕ" ===== */
 .App-Sidebar-Section {
   display: flex;
   align-items: center;
@@ -1579,78 +1424,394 @@
   margin-top: 8px;
 }
 
-.App-Sidebar-Section i {
-  font-size: 16px;
+.App-Sidebar-Section i { font-size: 16px; }
+
+/* ============================================
+   📱 АДАПТИВНОСТЬ — НОУТБУК (≤1200px)
+============================================ */
+@media (max-width: 1200px) {
+  .ALL-Applications {
+    min-width: 280px;
+  }
+
+  .Application-ALL-Right_container {
+    padding: 24px 20px;
+  }
 }
 
-/* ===== АДАПТИВ ДЛЯ НОВОГО САЙДБАРА ===== */
+/* ============================================
+   📱 АДАПТИВНОСТЬ — ПЛАНШЕТ (≤1024px)
+============================================ */
+@media (max-width: 1024px) {
+  .ALL-Applications {
+    min-width: 260px;
+    width: 30%;
+  }
+
+  .Application-Container-Information {
+    max-width: 100%;
+  }
+
+  .Stepper-Step {
+    min-width: 70px;
+  }
+
+  .Action-Btn {
+    min-width: 180px;
+  }
+}
+
+/* ============================================
+   📱 АДАПТИВНОСТЬ — ПЛАНШЕТ ПОРТРЕТ (≤768px)
+============================================ */
 @media (max-width: 768px) {
-  .App-Sidebar-Thumbs {
-    gap: 4px;
+  .Applications_Main_Container {
+    flex-direction: column;
+    overflow-y: auto;
   }
-  .App-Sidebar-Thumb {
-    width: 44px;
-    height: 44px;
+
+  .ALL-Applications {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 45vh;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
   }
-  .App-Sidebar-Actions {
+
+  .Head-Main {
+    justify-content: center;
+    height: 60px;
+    min-height: 60px;
+  }
+
+  .Applications-ALL_BTHS {
+    padding: 12px 10px;
+    gap: 8px;
+  }
+
+  .Applications-ALL_BTHS button {
+    min-height: 56px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .Application-ALL-Right_container {
+    width: 100%;
+    height: auto;
+    min-height: 55vh;
+    padding: 20px 16px;
+    padding-bottom: calc(20px + var(--safe-bottom));
+  }
+
+  .Application-Head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .Status-Stepper {
+    padding: 16px 4px 4px;
+  }
+
+  .Stepper-Step {
+    min-width: 60px;
+  }
+
+  .Stepper-Dot {
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
+  }
+
+  .Stepper-Step span {
+    font-size: 11px;
+  }
+
+  .Stepper-Line {
+    margin-top: 18px;
+  }
+
+  .Application-Actions {
     flex-direction: column;
   }
+
+  .Action-Btn {
+    min-width: 100%;
+  }
+
+  .Photos-Grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+  }
+
+  /* Лайтбокс */
+  .Lightbox-Image {
+    max-width: 96vw;
+    max-height: 80vh;
+    border-radius: 8px;
+  }
+
+  .Lightbox-Arrow {
+    width: 42px;
+    height: 42px;
+    font-size: 26px;
+  }
+
+  .Lightbox-Arrow_Left  { left: 10px; }
+  .Lightbox-Arrow_Right { right: 10px; }
+
+  .Lightbox-Close {
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    font-size: 26px;
+  }
+
+  /* Модалки */
+  .Modal-Wide {
+    max-width: 100%;
+  }
+
+  .UserApps-CardHead {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .UserApps-CardHead-Right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .UserApps-MediaGrid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  }
 }
 
-/* ===== КОНТЕЙНЕР РАСТЯГИВАЕТСЯ ПО КОНТЕНТУ (фото и кнопки видны) ===== */
-.Application-Container-Information {
-  height: auto !important;
-  max-height: none;
+/* ============================================
+   📱 АДАПТИВНОСТЬ — МОБИЛЬНЫЙ (≤576px)
+============================================ */
+@media (max-width: 576px) {
+  .Applications_Main_Container::before,
+  .Applications_Main_Container::after {
+    display: none; /* убираем тяжёлые blur-пятна на мобильных */
+  }
+
+  .ALL-Applications {
+    max-height: 40vh;
+  }
+
+  .Applications-ALL_BTHS button {
+    min-height: 52px;
+    font-size: 13px;
+    border-radius: 12px;
+  }
+
+  .Applications-ALL_BTHS button .bx-hash {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    font-size: 14px;
+  }
+
+  .Application-ALL-Right_container {
+    padding: 16px 12px;
+    padding-bottom: calc(16px + var(--safe-bottom));
+  }
+
+  .Application-Head h1 {
+    font-size: 17px;
+  }
+
+  .Application-Head h1 .bx-hash {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    font-size: 14px;
+  }
+
+  .Status-Badge {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .Stepper-Step {
+    min-width: 50px;
+  }
+
+  .Stepper-Dot {
+    width: 34px;
+    height: 34px;
+    font-size: 14px;
+  }
+
+  .Stepper-Step span {
+    font-size: 10px;
+  }
+
+  .Stepper-Line {
+    margin-top: 16px;
+  }
+
+  .Application-Row {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .Application-Row > i {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    font-size: 14px;
+  }
+
+  .Row-Value {
+    font-size: 13px;
+  }
+
+  .Photos-Grid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 6px;
+  }
+
+  .Photo-Item {
+    border-radius: 10px;
+  }
+
+  .Application-Description {
+    padding: 12px 14px;
+  }
+
+  .Application-Description p {
+    font-size: 13px;
+  }
+
+  .Action-Btn {
+    padding: 12px 16px;
+    font-size: 14px;
+    min-height: 48px;
+  }
+
+  .Completed-Note {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  /* Лайтбокс */
+  .Lightbox-Image {
+    max-width: 98vw;
+    max-height: 75vh;
+  }
+
+  .Lightbox-Arrow {
+    width: 38px;
+    height: 38px;
+    font-size: 22px;
+  }
+
+  .Lightbox-Arrow_Left  { left: 6px; }
+  .Lightbox-Arrow_Right { right: 6px; }
+
+  .Lightbox-Close {
+    top: 8px;
+    right: 8px;
+    width: 36px;
+    height: 36px;
+    font-size: 22px;
+  }
+
+  .Lightbox-Counter {
+    bottom: 16px;
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+
+  /* Модалки на мобильных */
+  .UserApps-List {
+    max-height: 50vh;
+  }
+
+  .UserApps-CardBody {
+    gap: 12px;
+  }
+
+  .Media-PreviewGrid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  }
 }
 
-/* ===== СЕКЦИЯ ФОТО ВНУТРИ КОНТЕЙНЕРА ===== */
-.Application-Photos {
-  margin-top: 4px;
+/* ============================================
+   📱 МАЛЕНЬКИЙ МОБИЛЬНЫЙ (≤380px)
+============================================ */
+@media (max-width: 380px) {
+  .Head-Main {
+    padding: 0 14px;
+  }
+
+  .Head-Main h1 {
+    font-size: 16px;
+  }
+
+  .Applications-ALL_BTHS {
+    padding: 10px 8px;
+  }
+
+  .Application-ALL-Right_container {
+    padding: 12px 10px;
+  }
+
+  .Stepper-Step {
+    min-width: 44px;
+  }
+
+  .Stepper-Dot {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+  }
+
+  .Photos-Grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
-.Photo-Item {
-  position: relative;
-  cursor: zoom-in;
-}
-.Photo-Item video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  background: #000;
-  cursor: default;
+/* ============================================
+   LANDSCAPE МОБИЛЬНЫЙ
+============================================ */
+@media (max-height: 500px) and (orientation: landscape) {
+  .Applications_Main_Container {
+    flex-direction: row;
+  }
+
+  .ALL-Applications {
+    width: 35%;
+    min-width: 260px;
+    max-height: none;
+    height: 100vh;
+    height: 100dvh;
+    border-bottom: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .Application-ALL-Right_container {
+    height: 100vh;
+    height: 100dvh;
+  }
 }
 
-/* Подсказка «увеличить» при наведении на фото */
-.Photo-ZoomHint {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 26px;
-  height: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(6px);
-  color: #fff;
-  font-size: 15px;
-  opacity: 0;
-  transition: opacity 0.25s ease;
-  pointer-events: none;
-}
-.Photo-Item:hover .Photo-ZoomHint { opacity: 1; }
-
-/* ===== КНОПКА «ВЕРНУТЬ» (смена статуса назад) ===== */
-.Action-Btn_Back {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #cfd6ff;
-  box-shadow: none;
-}
-.Action-Btn_Back:hover {
-  background: rgba(255, 184, 77, 0.12);
-  border-color: rgba(255, 184, 77, 0.4);
-  color: #ffb84d;
-  transform: translateY(-2px);
+/* ============================================
+   УМЕНЬШЕННОЕ ДВИЖЕНИЕ
+============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
